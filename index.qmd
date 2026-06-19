@@ -1,6 +1,6 @@
 ---
 title: "Final Project: [YOUR TITLE HERE]"
-author: "[YOUR NAMES]"
+author: "Bao Duong and Jean Jacques Brou"
 date: "2026-06-25"
 params:
   number: 5
@@ -18,7 +18,12 @@ execute:
   message: false
 output-dir: docs
 ---
-
+```{r}
+# Load libraries and data
+library(dplyr)
+library(tidyverse)
+library(ggtext)
+````
 
 ```{r}
 #| label: setup
@@ -41,18 +46,68 @@ _Briefly introduce your topic and research question._
 
 ## Data
 
-_Describe your data source(s), including where it came from, the key variables, and any pre-processing steps._
+# Source of the data: We will use AIDSVu Dataset 2024
+
+# How you will access the data: https://aidsvu.org/resources/#/datasets?years=2024&locations=county
+
+# We will focus on California. We will merge the three dataset: SODH, new diagnosis, PreP Use; then merge by county/GEOID. We will select variables of interest and remove all missing values including minus numbers before the analysis.
+
+# Rates of PrEP use were calculated per 100,000 population 
+# Import dataset 
+```{r}
+sdoh <- read.csv("data/AIDSVu_County_SDOH_2023-20250726.csv")
+prEP <- read.csv("data/AIDSVu_County_PrEP_2023_20250501.csv")
+newdx <- read.csv("data/AIDSVu_County_NewDX_2023-20250726.csv")
+```  
 
 ```{r}
-#| eval: false
-# Load libraries and data
-library(tidyverse)
+#Make a value NA for data is noted as being suppressed/missing due to too low of a population size, data not shared due to a data agreement, etc
 
-data <- read_csv("data/my_data.csv")
-glimpse(data)
-```   
+sdoh <- sdoh %>%
+  mutate(across(where(is.numeric), ~ ifelse(.x %in% -9:-1, NA, .x))) %>%
+  mutate(across(where(is.character), ~ ifelse(.x %in% as.character(-9:-1), NA, .x)))
+  
+prEP <- prEP %>%
+  mutate(across(where(is.numeric), ~ ifelse(.x %in% -9:-1, NA, .x))) %>%
+  mutate(across(where(is.character), ~ ifelse(.x %in% as.character(-9:-1), NA, .x)))
 
-## Visualizatiob 1: [Title Here]
+newdx <- newdx %>%
+  mutate(across(where(is.numeric), ~ ifelse(.x %in% -9:-1, NA, .x))) %>%
+  mutate(across(where(is.character), ~ ifelse(.x %in% as.character(-9:-1), NA, .x)))
+
+  
+# Rate stability is listed with a Y when they are reliable rates (i.e. those generated with a numerator of 12 or greater) and N when they are not reliable. Also rate stability is listed as -9 when rate is unavailable, suppressed, or zero.  Make NAs for rates if they are any of those scenarios 
+
+prEP <- prEP %>%
+  mutate(County.PrEP.Rate = ifelse(County.PrEP.Rate.Stability == "N", NA, County.PrEP.Rate))
+
+newdx <- newdx %>%
+  mutate(New.Diagnoses.Rate   = ifelse(New.Diagnoses.Rate.Stability == "N", NA, New.Diagnoses.Rate),
+    New.Diagnoses.Black.Rate   = ifelse(New.Diagnoses.Black.Rate.Stability == "N", NA, New.Diagnoses.Black.Rate),
+    New.Diagnoses.White.Rate   = ifelse(New.Diagnoses.White.Rate.Stability == "N", NA, New.Diagnoses.White.Rate),
+    New.Diagnoses.Hispanic.Rate = ifelse(New.Diagnoses.Hispanic.Rate.Stability == "N", NA, New.Diagnoses.Hispanic.Rate),
+    New.Diagnoses.Asian.Rate   = ifelse(New.Diagnoses.Asian.Rate.Stability == "N", NA, New.Diagnoses.Asian.Rate)
+  )
+```  
+```{r}
+# Merge dataset
+
+newdx <- newdx %>% mutate(GEO.ID = as.character(GEO.ID))
+prEP <- prEP %>% mutate(GEO.ID = as.character(GEO.ID))
+sdoh <- sdoh %>% mutate(GEO.ID = as.character(GEO.ID))
+
+merged_data <- left_join(newdx, prEP, by = c("GEO.ID"))
+
+merged_data <- left_join(merged_data, sdoh, by = c("GEO.ID"))
+
+merged_data_edit <- merged_data %>%
+  select(merged_data$GEO.ID,merged_data$GEO.ID,merged_data$State,merged_data$State.Abbreviation,merged_data$County.Name)
+
+```  
+
+
+
+## Visualization 1: [Title Here]
 
 _Describe what this plot shows, and why it's important._
 
