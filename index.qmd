@@ -1,6 +1,6 @@
 ---
 title: "Final Project: [YOUR TITLE HERE]"
-author: "[YOUR NAMES]"
+author: "Bao Duong and Jean Jacques Brou"
 date: "2026-06-25"
 params:
   number: 5
@@ -18,7 +18,12 @@ execute:
   message: false
 output-dir: docs
 ---
-
+```{r}
+# Load libraries and data
+library(dplyr)
+library(tidyverse)
+library(ggtext)
+````
 
 ```{r}
 #| label: setup
@@ -41,7 +46,9 @@ _Briefly introduce your topic and research question._
 
 ## Data
 
-_Describe your data source(s), including where it came from, the key variables, and any pre-processing steps._
+# Source of the data: We will use AIDSVu Dataset 2024
+
+# How you will access the data: https://aidsvu.org/resources/#/datasets?years=2024&locations=county
 
 prEP
 newdx
