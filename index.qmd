@@ -43,15 +43,161 @@ _Briefly introduce your topic and research question._
 
 _Describe your data source(s), including where it came from, the key variables, and any pre-processing steps._
 
+prEP
+newdx
+
 ```{r}
 #| eval: false
-# Load libraries and data
+# Load the packages and data
 library(tidyverse)
+library(here)
+library(janitor)
 
-data <- read_csv("data/my_data.csv")
-glimpse(data)
+
+sdoh <- read_csv(here("data/AIDSVu_County_SDOH_2023-20250726.csv"))
+prEP <- read_csv(here("data/AIDSVu_County_PrEP_2023_20250501.csv"))
+newdx <- read_csv(here("data/AIDSVu_County_NewDX_2023-20250726.csv"))
+
 ```   
 
+
+
+```{r}
+#Make a value NA for data is noted as being suppressed/missing due to too low of a population size, data not shared due to a data agreement, etc
+
+sdoh <- sdoh %>%
+  mutate(across(where(is.numeric), ~ ifelse(.x %in% -9:-1, NA, .x))) %>%
+  mutate(across(where(is.character), ~ ifelse(.x %in% as.character(-9:-1), NA, .x)))
+
+prEP <- prEP %>%
+  mutate(across(where(is.numeric), ~ ifelse(.x %in% -9:-1, NA, .x))) %>%
+  mutate(across(where(is.character), ~ ifelse(.x %in% as.character(-9:-1), NA, .x)))
+
+newdx <- newdx %>%
+  mutate(across(where(is.numeric), ~ ifelse(.x %in% -9:-1, NA, .x))) %>%
+  mutate(across(where(is.character), ~ ifelse(.x %in% as.character(-9:-1), NA, .x)))
+
+```
+
+
+
+
+```{r}
+# converting variable from camelCase into snake_case 
+sdoh  <- sdoh  %>% clean_names()
+prEP <- prEP %>% clean_names()
+newdx <- newdx %>% clean_names()
+```
+
+
+
+```{r}
+# Use rename_with function to fix prep split in "pr_ep" to prep
+prEP <- prEP %>%
+  clean_names() %>%
+  rename_with(
+    ~ str_replace_all(.x, "pr_ep", "prep")
+  )
+prEP
+```
+
+
+
+
+```{r}
+# Rate stability is listed with a Y when they are reliable rates (i.e. those generated with a numerator of 12 or greater) and N when they are not reliable. Also rate stability is listed as -9 when rate is unavailable, suppressed, or zero.  Make NAs for rates if they are any of those scenarios 
+
+# use the variable of interest to convert N to NA
+prEP <- prEP %>%
+  mutate(county_prep_rate = ifelse(county_prep_rate_stability == "N", NA, county_prep_rate))
+
+newdx <- newdx %>%
+  mutate(new_diagnoses_rate   = ifelse(new_diagnoses_rate_stability == "N", NA, new_diagnoses_rate),
+    new_diagnoses_black_rate   = ifelse(new_diagnoses_black_rate_stability == "N", NA, new_diagnoses_black_rate),
+    new_diagnoses_white_rate   = ifelse(new_diagnoses_white_rate_stability == "N", NA, new_diagnoses_white_rate),
+    new_diagnoses_hispanic_rate = ifelse(new_diagnoses_hispanic_rate_stability == "N", NA, new_diagnoses_hispanic_rate),
+    new_diagnoses_asian_rate   = ifelse(new_diagnoses_asian_rate_stability == "N", NA, new_diagnoses_asian_rate)
+  )
+```
+
+
+
+```{r}
+# replace all 0 values with NA across the 3 datasets
+sdoh <- sdoh %>%
+  mutate(
+    across(
+      where(is.numeric),
+      ~ ifelse(.x == 0, NA, .x)
+    )
+  )
+
+prEP <- prEP %>%
+  mutate(
+    across(
+      where(is.numeric),
+      ~ ifelse(.x == 0, NA, .x)
+    )
+  )
+
+newdx <- newdx %>%
+  mutate(
+    across(
+      where(is.numeric),
+      ~ ifelse(.x == 0, NA, .x)
+    )
+  )
+
+```
+
+
+
+```{r}
+# Converting geo_id and year from numeric tpo character
+newdx <- newdx %>% mutate(geo_id = as.character(geo_id),
+                          year = as.character(year))
+prEP <- prEP %>% mutate(geo_id = as.character(geo_id),
+                        year = as.character(year))
+sdoh <- sdoh %>% mutate(geo_id = as.character(geo_id),
+                        year = as.character(year))
+```
+
+
+
+
+```{r}
+# Filter Filter each dataset to California
+newdx_ca <- newdx %>%
+  filter(state == "California")
+
+# rename variables and delete unnecessary variables
+sdoh_ca <- sdoh %>%
+  filter(state == "California") %>%
+  rename(county_name = county, county_urbanicity = x2023_county_urbanicity)%>%
+  select(-urbanicity_year, -sdoh_year, -unemployment_year)
+
+# rename variable county
+prep_ca <- prEP %>%
+  filter(state == "California") %>%
+  rename(county_name = county)
+
+```
+
+
+
+
+```{r}
+# Join the 3 dataset by keys
+
+merged_data <- left_join(newdx_ca, prep_ca, by = c("year", "geo_id", "state", "state_abbreviation", "county_name"))
+
+hiv_california <- left_join(merged_data, sdoh_ca, by = c("year", "geo_id", "state", "state_abbreviation", "county_name"))
+
+hiv_california
+ 
+```
+
+ 
 ## Visualizatiob 1: [Title Here]
 
 _Describe what this plot shows, and why it's important._
