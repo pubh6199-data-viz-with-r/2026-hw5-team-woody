@@ -23,7 +23,8 @@ output-dir: docs
 library(dplyr)
 library(tidyverse)
 library(ggtext)
-````
+library(janitor)
+```
 
 ```{r}
 #| label: setup
@@ -61,6 +62,12 @@ newdx <- read.csv("data/AIDSVu_County_NewDX_2023-20250726.csv")
 ```  
 
 ```{r}
+# converting variable from camelCase into snake_case 
+sdoh  <- sdoh  %>% clean_names()
+prEP <- prEP %>% clean_names()
+newdx <- newdx %>% clean_names()
+```
+```{r}
 #Make a value NA for data is noted as being suppressed/missing due to too low of a population size, data not shared due to a data agreement, etc
 
 sdoh <- sdoh %>%
@@ -74,37 +81,96 @@ prEP <- prEP %>%
 newdx <- newdx %>%
   mutate(across(where(is.numeric), ~ ifelse(.x %in% -9:-1, NA, .x))) %>%
   mutate(across(where(is.character), ~ ifelse(.x %in% as.character(-9:-1), NA, .x)))
+```
 
-  
+
+```{r}
+# Use rename_with function to fix prep split in "pr_ep" to prep
+prEP <- prEP %>%
+  clean_names() %>%
+  rename_with(
+    ~ str_replace_all(.x, "pr_ep", "prep")
+  )
+```
+
 # Rate stability is listed with a Y when they are reliable rates (i.e. those generated with a numerator of 12 or greater) and N when they are not reliable. Also rate stability is listed as -9 when rate is unavailable, suppressed, or zero.  Make NAs for rates if they are any of those scenarios 
 
 prEP <- prEP %>%
-  mutate(County.PrEP.Rate = ifelse(County.PrEP.Rate.Stability == "N", NA, County.PrEP.Rate))
+  mutate(county_prep_rate = ifelse(county_prep_rate_stability == "N", NA, county_prep_rate))
 
 newdx <- newdx %>%
-  mutate(New.Diagnoses.Rate   = ifelse(New.Diagnoses.Rate.Stability == "N", NA, New.Diagnoses.Rate),
-    New.Diagnoses.Black.Rate   = ifelse(New.Diagnoses.Black.Rate.Stability == "N", NA, New.Diagnoses.Black.Rate),
-    New.Diagnoses.White.Rate   = ifelse(New.Diagnoses.White.Rate.Stability == "N", NA, New.Diagnoses.White.Rate),
-    New.Diagnoses.Hispanic.Rate = ifelse(New.Diagnoses.Hispanic.Rate.Stability == "N", NA, New.Diagnoses.Hispanic.Rate),
-    New.Diagnoses.Asian.Rate   = ifelse(New.Diagnoses.Asian.Rate.Stability == "N", NA, New.Diagnoses.Asian.Rate)
+  mutate(
+    new_diagnoses_rate = ifelse(
+      new_diagnoses_rate_stability == "N",
+      NA,
+      new_diagnoses_rate
+    ),
+    new_diagnoses_black_rate = ifelse(
+      new_diagnoses_black_rate_stability == "N",
+      NA,
+      new_diagnoses_black_rate
+    ),
+    new_diagnoses_white_rate = ifelse(
+      new_diagnoses_white_rate_stability == "N",
+      NA,
+      new_diagnoses_white_rate
+    ),
+    new_diagnoses_hispanic_rate = ifelse(
+      new_diagnoses_hispanic_rate_stability == "N",
+      NA,
+      new_diagnoses_hispanic_rate
+    ),
+    new_diagnoses_asian_rate = ifelse(
+      new_diagnoses_asian_rate_stability == "N",
+      NA,
+      new_diagnoses_asian_rate
+    )
   )
 ```  
 ```{r}
+# Converting geo_id and year from numeric to character
+newdx <- newdx %>% mutate(geo_id = as.character(geo_id),
+                          year = as.character(year))
+prEP <- prEP %>% mutate(geo_id = as.character(geo_id),
+                        year = as.character(year))
+sdoh <- sdoh %>% mutate(geo_id = as.character(geo_id),
+                        year = as.character(year))
+```
+
+
+```{r}
+# Filter  each dataset to California
+newdx_ca <- newdx %>%
+  filter(state == "California")
+  
+# rename variables and delete unnecessary variables
+sdoh_ca <- sdoh %>%
+  filter(state == "California") %>%
+  rename(county_name = county, county_urbanicity = x2023_county_urbanicity)%>%
+  select(-urbanicity_year, -sdoh_year, -unemployment_year)
+```
+
+```{r}
+# rename variables and delete unnecessary variables
+sdoh_ca <- sdoh %>%
+  filter(state == "california") %>%
+rename(county_name = county, county_urbanicity = x2023_county_urbanicity)%>%
+  select(-urbanicity_year, -sdoh_year, -unemployment_year)
+
+# rename variable county
+prep_ca <- prEP %>%
+  filter(state == "California") %>%
+  rename(county_name = county)
+```
+
+```{r}
 # Merge dataset
 
-newdx <- newdx %>% mutate(GEO.ID = as.character(GEO.ID))
-prEP <- prEP %>% mutate(GEO.ID = as.character(GEO.ID))
-sdoh <- sdoh %>% mutate(GEO.ID = as.character(GEO.ID))
+merged_data <- left_join(newdx_ca, prep_ca, by = c("year", "geo_id", "state", "state_abbreviation", "county_name"))
 
-merged_data <- left_join(newdx, prEP, by = c("GEO.ID"))
-
-merged_data <- left_join(merged_data, sdoh, by = c("GEO.ID"))
-
-merged_data_edit <- merged_data %>%
-  select(merged_data$GEO.ID,merged_data$GEO.ID,merged_data$State,merged_data$State.Abbreviation,merged_data$County.Name)
+hiv_california <- left_join(merged_data, sdoh_ca, by = c("year", "geo_id", "state", "state_abbreviation", "county_name"))
 
 ```  
-
 
 
 ## Visualization 1: [Title Here]
