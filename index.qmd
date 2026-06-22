@@ -52,6 +52,11 @@ newdx
 library(tidyverse)
 library(here)
 library(janitor)
+library(tidyverse)
+library(tmap)
+library(sf)
+library(tigris)
+library(leaflet)
 
 
 sdoh <- read_csv(here("data/AIDSVu_County_SDOH_2023-20250726.csv"))
@@ -98,7 +103,6 @@ prEP <- prEP %>%
   rename_with(
     ~ str_replace_all(.x, "pr_ep", "prep")
   )
-prEP
 ```
 
 
@@ -122,35 +126,6 @@ newdx <- newdx %>%
 
 
 
-```{r}
-# replace all 0 values with NA across the 3 datasets
-sdoh <- sdoh %>%
-  mutate(
-    across(
-      where(is.numeric),
-      ~ ifelse(.x == 0, NA, .x)
-    )
-  )
-
-prEP <- prEP %>%
-  mutate(
-    across(
-      where(is.numeric),
-      ~ ifelse(.x == 0, NA, .x)
-    )
-  )
-
-newdx <- newdx %>%
-  mutate(
-    across(
-      where(is.numeric),
-      ~ ifelse(.x == 0, NA, .x)
-    )
-  )
-
-```
-
-
 
 ```{r}
 # Converting geo_id and year from numeric tpo character
@@ -164,22 +139,26 @@ sdoh <- sdoh %>% mutate(geo_id = as.character(geo_id),
 
 
 
-
 ```{r}
 # Filter Filter each dataset to California
 newdx_ca <- newdx %>%
-  filter(state == "California")
+  filter(state == "California") %>%
+  rename(geoid = geo_id) %>%
+  select(-contains("heterosexual"),
+         -contains ("idu"),
+         -contains ("transmission"),
+         -contains ("msm"))
 
 # rename variables and delete unnecessary variables
 sdoh_ca <- sdoh %>%
   filter(state == "California") %>%
-  rename(county_name = county, county_urbanicity = x2023_county_urbanicity)%>%
+  rename(geoid = geo_id, county_name = county, county_urbanicity = x2023_county_urbanicity)%>%
   select(-urbanicity_year, -sdoh_year, -unemployment_year)
 
 # rename variable county
 prep_ca <- prEP %>%
   filter(state == "California") %>%
-  rename(county_name = county)
+  rename(geoid = geo_id, county_name = county) 
 
 ```
 
@@ -189,16 +168,19 @@ prep_ca <- prEP %>%
 ```{r}
 # Join the 3 dataset by keys
 
-merged_data <- left_join(newdx_ca, prep_ca, by = c("year", "geo_id", "state", "state_abbreviation", "county_name"))
+merged_data <- left_join(newdx_ca, prep_ca, by = c("year", "geoid", "state", "state_abbreviation", "county_name"))
 
-hiv_california <- left_join(merged_data, sdoh_ca, by = c("year", "geo_id", "state", "state_abbreviation", "county_name"))
+hiv_california <- left_join(merged_data, sdoh_ca, by = c("year", "geoid", "state", "state_abbreviation", "county_name"))
 
 hiv_california
- 
+
 ```
 
  
+ 
+ 
 ## Visualizatiob 1: [Title Here]
+
 
 _Describe what this plot shows, and why it's important._
 
@@ -210,9 +192,41 @@ _Describe what this plot shows, and why it's important._
 
 _Describe what this plot shows, and why it's important._
 
+
+
 ```{r}
-# your code here
+# download California shape files
+# use "clean_names" to transform variables name in uppercase letter to lowercase
+# rename some variable to match common in the HIV_California variable
+# standardize geoid character to 5
+
+counties_ca <- counties(state = "CA", cb = TRUE, year = 2023) %>%
+  janitor::clean_names() %>%
+  rename(
+    city_name          = name,
+    county_name        = namelsad,
+    state_abbreviation = stusps,
+    state              = state_name
+  ) %>%
+  mutate(
+    geoid = as.character(geoid),
+    geoid = str_pad(geoid, width = 5, pad = "0")
+  )
+
+hiv_california <- hiv_california %>%
+  mutate(
+    geoid = as.character(geoid),
+    geoid = str_pad(geoid, width = 5, pad = "0")
+  )
+#Join the HIV_California data to california shape files
+
+hiv_california_sf <- counties_ca  %>%
+  left_join(hiv_california, 
+            by = c("geoid", "state", "state_abbreviation", "county_name"))
+
 ```
+
+
 
 ## Visualization 3: [Title Here]
 
