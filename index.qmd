@@ -198,7 +198,7 @@ _Describe what this plot shows, and why it's important._
 # download California shape files
 # use "clean_names" to transform variables name in uppercase letter to lowercase
 # rename some variable to match common in the HIV_California variable
-# standardize geoid character to 5
+
 
 counties_ca <- counties(state = "CA", cb = TRUE, year = 2023) %>%
   janitor::clean_names() %>%
