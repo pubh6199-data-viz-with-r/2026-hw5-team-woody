@@ -10,12 +10,29 @@ library(sf)
 library(tigris)
 library(leaflet)
 
-#set wd as the 2026-hw5-team-woody folder 
-sdoh <- read_csv("data/AIDSVu_County_SDOH_2023-20250726.csv")
-prEP <- read_csv("data/AIDSVu_County_PrEP_2023_20250501.csv")
-newdx <- read_csv("data/AIDSVu_County_NewDX_2023-20250726.csv")
+prEP
+newdx
+
+```{r}
+#| eval: false
+# Load the packages and data
+library(tidyverse)
+library(here)
+library(janitor)
+library(tidyverse)
+library(tmap)
+library(sf)
+library(tigris)
+library(leaflet)
+
+
+sdoh <- read_csv(here("data/AIDSVu_County_SDOH_2023-20250726.csv"))
+prEP <- read_csv(here("data/AIDSVu_County_PrEP_2023_20250501.csv"))
+newdx <- read_csv(here("data/AIDSVu_County_NewDX_2023-20250726.csv"))
 
 ```   
+
+
 
 ```{r}
 #Make a value NA for data is noted as being suppressed/missing due to too low of a population size, data not shared due to a data agreement, etc
@@ -90,7 +107,7 @@ sdoh <- sdoh %>% mutate(geo_id = as.character(geo_id),
 
 
 ```{r}
-# Filter  each dataset to California
+# Filter Filter each dataset to California
 newdx_ca <- newdx %>%
   filter(state == "California") %>%
   rename(geoid = geo_id) %>%
@@ -112,6 +129,76 @@ prep_ca <- prEP %>%
 
 ```
 
+
+
+
+```{r}
+# Join the 3 dataset by keys
+
+merged_data <- left_join(newdx_ca, prep_ca, by = c("year", "geoid", "state", "state_abbreviation", "county_name"))
+
+hiv_california <- left_join(merged_data, sdoh_ca, by = c("year", "geoid", "state", "state_abbreviation", "county_name"))
+
+hiv_california
+
+```
+
+ 
+ 
+ 
+## Visualizatiob 1: [Title Here]
+
+
+
+```{r}
+# Converting geo_id and year from numeric tpo character
+newdx <- newdx %>% mutate(geo_id = as.character(geo_id),
+                          year = as.character(year))
+prEP <- prEP %>% mutate(geo_id = as.character(geo_id),
+                        year = as.character(year))
+sdoh <- sdoh %>% mutate(geo_id = as.character(geo_id),
+                        year = as.character(year))
+```
+
+
+
+
+
+```{r}
+# download California shape files
+# use "clean_names" to transform variables name in uppercase letter to lowercase
+# rename some variable to match common in the HIV_California variable
+
+
+counties_ca <- counties(state = "CA", cb = TRUE, year = 2023) %>%
+  janitor::clean_names() %>%
+  rename(
+    city_name          = name,
+    county_name        = namelsad,
+    state_abbreviation = stusps,
+    state              = state_name
+  ) %>%
+  mutate(
+    geoid = as.character(geoid),
+    geoid = str_pad(geoid, width = 5, pad = "0")
+  )
+
+hiv_california <- hiv_california %>%
+  mutate(
+    geoid = as.character(geoid),
+    geoid = str_pad(geoid, width = 5, pad = "0")
+  )
+#Join the HIV_California data to california shape files
+
+hiv_california_sf <- counties_ca  %>%
+  left_join(hiv_california, 
+            by = c("geoid", "state", "state_abbreviation", "county_name"))
+
+```
+
+
+
+## Visualization 3: [Title Here]
 
 
 
