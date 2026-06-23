@@ -1,40 +1,31 @@
-``{r}
-#| eval: false
-# Load the packages and data
+# global.R
+# Loaded once at startup; shared across all sessions.
+
+# ── Packages ────────────────────────────────────────────────────────────────
+library(shiny)
+library(bslib)
+library(bsicons)
+library(dplyr)
+library(tidyr)
+library(scales)
+library(ggplot2)
+library(fmsb)
+library(leaflet)
+library(sf)
+library(stringr)
+library(tigris)
+library(janitor)
+library(plotly)
 library(tidyverse)
 library(here)
-library(janitor)
-library(tidyverse)
 library(tmap)
-library(sf)
-library(tigris)
-library(leaflet)
 
-prEP
-newdx
+#set wd as the 2026-hw5-team-woody folder 
+getwd() 
+sdoh <- read_csv("AIDSVu_County_SDOH_2023-20250726.csv")
+prEP <- read_csv("AIDSVu_County_PrEP_2023_20250501.csv")
+newdx <- read_csv("AIDSVu_County_NewDX_2023-20250726.csv")
 
-```{r}
-#| eval: false
-# Load the packages and data
-library(tidyverse)
-library(here)
-library(janitor)
-library(tidyverse)
-library(tmap)
-library(sf)
-library(tigris)
-library(leaflet)
-
-
-sdoh <- read_csv(here("data/AIDSVu_County_SDOH_2023-20250726.csv"))
-prEP <- read_csv(here("data/AIDSVu_County_PrEP_2023_20250501.csv"))
-newdx <- read_csv(here("data/AIDSVu_County_NewDX_2023-20250726.csv"))
-
-```   
-
-
-
-```{r}
 #Make a value NA for data is noted as being suppressed/missing due to too low of a population size, data not shared due to a data agreement, etc
 
 sdoh <- sdoh %>%
@@ -49,33 +40,18 @@ newdx <- newdx %>%
   mutate(across(where(is.numeric), ~ ifelse(.x %in% -9:-1, NA, .x))) %>%
   mutate(across(where(is.character), ~ ifelse(.x %in% as.character(-9:-1), NA, .x)))
 
-```
-
-
-
-
-```{r}
 # converting variable from camelCase into snake_case 
 sdoh  <- sdoh  %>% clean_names()
 prEP <- prEP %>% clean_names()
 newdx <- newdx %>% clean_names()
-```
 
-
-
-```{r}
 # Use rename_with function to fix prep split in "pr_ep" to prep
 prEP <- prEP %>%
   clean_names() %>%
   rename_with(
     ~ str_replace_all(.x, "pr_ep", "prep")
   )
-```
 
-
-
-
-```{r}
 # Rate stability is listed with a Y when they are reliable rates (i.e. those generated with a numerator of 12 or greater) and N when they are not reliable. Also rate stability is listed as -9 when rate is unavailable, suppressed, or zero.  Make NAs for rates if they are any of those scenarios 
 
 # use the variable of interest to convert N to NA
@@ -84,17 +60,12 @@ prEP <- prEP %>%
 
 newdx <- newdx %>%
   mutate(new_diagnoses_rate   = ifelse(new_diagnoses_rate_stability == "N", NA, new_diagnoses_rate),
-    new_diagnoses_black_rate   = ifelse(new_diagnoses_black_rate_stability == "N", NA, new_diagnoses_black_rate),
-    new_diagnoses_white_rate   = ifelse(new_diagnoses_white_rate_stability == "N", NA, new_diagnoses_white_rate),
-    new_diagnoses_hispanic_rate = ifelse(new_diagnoses_hispanic_rate_stability == "N", NA, new_diagnoses_hispanic_rate),
-    new_diagnoses_asian_rate   = ifelse(new_diagnoses_asian_rate_stability == "N", NA, new_diagnoses_asian_rate)
+         new_diagnoses_black_rate   = ifelse(new_diagnoses_black_rate_stability == "N", NA, new_diagnoses_black_rate),
+         new_diagnoses_white_rate   = ifelse(new_diagnoses_white_rate_stability == "N", NA, new_diagnoses_white_rate),
+         new_diagnoses_hispanic_rate = ifelse(new_diagnoses_hispanic_rate_stability == "N", NA, new_diagnoses_hispanic_rate),
+         new_diagnoses_asian_rate   = ifelse(new_diagnoses_asian_rate_stability == "N", NA, new_diagnoses_asian_rate)
   )
-```
 
-
-
-
-```{r}
 # Converting geo_id and year from numeric tpo character
 newdx <- newdx %>% mutate(geo_id = as.character(geo_id),
                           year = as.character(year))
@@ -102,12 +73,8 @@ prEP <- prEP %>% mutate(geo_id = as.character(geo_id),
                         year = as.character(year))
 sdoh <- sdoh %>% mutate(geo_id = as.character(geo_id),
                         year = as.character(year))
-```
 
-
-
-```{r}
-# Filter Filter each dataset to California
+# Filter  each dataset to California
 newdx_ca <- newdx %>%
   filter(state == "California") %>%
   rename(geoid = geo_id) %>%
@@ -127,44 +94,67 @@ prep_ca <- prEP %>%
   filter(state == "California") %>%
   rename(geoid = geo_id, county_name = county) 
 
-```
-
-
-
-
-```{r}
 # Join the 3 dataset by keys
 
 merged_data <- left_join(newdx_ca, prep_ca, by = c("year", "geoid", "state", "state_abbreviation", "county_name"))
 
 hiv_california <- left_join(merged_data, sdoh_ca, by = c("year", "geoid", "state", "state_abbreviation", "county_name"))
 
-hiv_california
+# download California shape files
+# use "clean_names" to transform variables name in uppercase letter to lowercase
+# rename some variable to match common in the HIV_California variable
 
-```
+counties_ca <- counties(state = "CA", cb = TRUE, year = 2023) %>%
+  janitor::clean_names() %>%
+  rename(
+    city_name          = name,
+    county_name        = namelsad,
+    state_abbreviation = stusps,
+    state              = state_name
+  ) %>%
+  mutate(
+    geoid = as.character(geoid),
+    geoid = str_pad(geoid, width = 5, pad = "0")
+  )
 
- 
- 
- 
-## Visualizatiob 1: [Title Here]
+hiv_california <- hiv_california %>%
+  mutate(
+    geoid = as.character(geoid),
+    geoid = str_pad(geoid, width = 5, pad = "0")
+  )
+#Join the HIV_California data to california shape files
+
+hiv_california_sf <- counties_ca  %>%
+  left_join(hiv_california, 
+            by = c("geoid", "state", "state_abbreviation", "county_name"))
+
+
+# rename some variable to match common in the HIV_California variable
+# visualization 1 Bin new_diagnoses_cases into High / Low 
+
+hiv_california <- hiv_california %>%
+  mutate(
+    new_diagnoses_cases_bin = if_else(
+      new_diagnoses_cases >= median(new_diagnoses_cases, na.rm = TRUE),
+      "High HIV diagnoses",
+      "Low HIV diagnoses"
+    ),
+    new_diagnoses_cases_bin = factor(
+      new_diagnoses_cases_bin,
+      levels = c("Low HIV diagnoses", "High HIV diagnoses")
+    ),
+    .after = new_diagnoses_cases
+  )
 
 
 
-```{r}
-# Converting geo_id and year from numeric tpo character
-newdx <- newdx %>% mutate(geo_id = as.character(geo_id),
-                          year = as.character(year))
-prEP <- prEP %>% mutate(geo_id = as.character(geo_id),
-                        year = as.character(year))
-sdoh <- sdoh %>% mutate(geo_id = as.character(geo_id),
-                        year = as.character(year))
-```
+# Pre-normalised dataset for radar (rescale numeric cols across all counties)
+hiv_norm <- hiv_california %>%
+  mutate(across(where(is.numeric), rescale))
 
 
-
-
-
-```{r}
+# for visualization 2 California shape files
+# use "clean_names" to transform variables name in uppercase letter to lowercase
 # download California shape files
 # use "clean_names" to transform variables name in uppercase letter to lowercase
 # rename some variable to match common in the HIV_California variable
@@ -194,71 +184,29 @@ hiv_california_sf <- counties_ca  %>%
   left_join(hiv_california, 
             by = c("geoid", "state", "state_abbreviation", "county_name"))
 
-```
 
+# County choices for dropdowns 
+county_choices <- sort(unique(hiv_california$county_name))
 
+# Visualization 3 
+race_cols <- c(
+  "Black"              = "new_diagnoses_black_rate",
+  "White"              = "new_diagnoses_white_rate",
+  "Hispanic"           = "new_diagnoses_hispanic_rate",
+  "Asian"              = "new_diagnoses_asian_rate",
+  "Amer. Indian / AN"  = "new_diagnoses_american_indian_alaska_native_rate",
+  "Multiple Races"     = "new_diagnoses_multiple_races_rate",
+  "NH / Pacific Isl."  = "new_diagnoses_native_hawaiian_other_pacific_islander_rate"
+)
 
-## Visualization 3: [Title Here]
-
-
-
-```{r}
-# Join the 3 dataset by keys
-
-merged_data <- left_join(newdx_ca, prep_ca, by = c("year", "geoid", "state", "state_abbreviation", "county_name"))
-
-hiv_california <- left_join(merged_data, sdoh_ca, by = c("year", "geoid", "state", "state_abbreviation", "county_name"))
-
-```
-
- 
- 
- 
-## Visualization 1: [Title Here]
-
-
-_Describe what this plot shows, and why it's important._
-
-```{r}
-# your code here
-```
-
-## Visualization 2: [Title Here]
-
-_Describe what this plot shows, and why it's important._
-
-
-
-```{r}
-# download California shape files
-# use "clean_names" to transform variables name in uppercase letter to lowercase
-# rename some variable to match common in the HIV_California variable
-
-
-counties_ca <- counties(state = "CA", cb = TRUE, year = 2023) %>%
-  janitor::clean_names() %>%
-  rename(
-    city_name          = name,
-    county_name        = namelsad,
-    state_abbreviation = stusps,
-    state              = state_name
+# Long-format race data for Tab 3 bar chart
+race_long <- hiv_california %>%
+  select(county_name, all_of(unname(race_cols))) %>%
+  pivot_longer(
+    cols      = all_of(unname(race_cols)),
+    names_to  = "race_col",
+    values_to = "hiv_rate"
   ) %>%
-  mutate(
-    geoid = as.character(geoid),
-    geoid = str_pad(geoid, width = 5, pad = "0")
-  )
+  mutate(race = names(race_cols)[match(race_col, unname(race_cols))]) %>%
+  select(county_name, race, hiv_rate)
 
-hiv_california <- hiv_california %>%
-  mutate(
-    geoid = as.character(geoid),
-    geoid = str_pad(geoid, width = 5, pad = "0")
-  )
-#Join the HIV_California data to california shape files
-
-hiv_california_sf <- counties_ca  %>%
-  left_join(hiv_california, 
-            by = c("geoid", "state", "state_abbreviation", "county_name"))
-
-# save as csv to import into the 2026-hw-5-team-woody folder
-
-write.csv(hiv_california_sf,file = "data/hiv_california_sf.csv")
