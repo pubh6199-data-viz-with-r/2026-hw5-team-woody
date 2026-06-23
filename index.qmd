@@ -1,47 +1,14 @@
----
-title: "Final Project: [YOUR TITLE HERE]"
-author: "[YOUR NAMES]"
-date: "2026-06-25"
-params:
-  number: 5
-  purpose: "Final project for PUBH 6199: Visualizing Data with R"
-format: 
-  html:
-    toc: true
-    toc-location: right
-    code-fold: true
-    theme: flatly
-    self-contained: true
-execute:
-  echo: true
-  warning: false
-  message: false
-output-dir: docs
----
-
-
-```{r}
-#| label: setup
-#| include: false
-
-knitr::opts_chunk$set(
-    warning = FALSE,
-    message = FALSE,
-    fig.path = "figs/",
-    fig.width = 7.252,
-    fig.height = 4,
-    comment = "#>",
-    fig.retina = 3
-)
-```
-
-## Introduction
-
-_Briefly introduce your topic and research question._
-
-## Data
-
-_Describe your data source(s), including where it came from, the key variables, and any pre-processing steps._
+``{r}
+#| eval: false
+# Load the packages and data
+library(tidyverse)
+library(here)
+library(janitor)
+library(tidyverse)
+library(tmap)
+library(sf)
+library(tigris)
+library(leaflet)
 
 prEP
 newdx
@@ -187,6 +154,74 @@ hiv_california
 ## Visualizatiob 1: [Title Here]
 
 
+
+```{r}
+# Converting geo_id and year from numeric tpo character
+newdx <- newdx %>% mutate(geo_id = as.character(geo_id),
+                          year = as.character(year))
+prEP <- prEP %>% mutate(geo_id = as.character(geo_id),
+                        year = as.character(year))
+sdoh <- sdoh %>% mutate(geo_id = as.character(geo_id),
+                        year = as.character(year))
+```
+
+
+
+
+
+```{r}
+# download California shape files
+# use "clean_names" to transform variables name in uppercase letter to lowercase
+# rename some variable to match common in the HIV_California variable
+
+
+counties_ca <- counties(state = "CA", cb = TRUE, year = 2023) %>%
+  janitor::clean_names() %>%
+  rename(
+    city_name          = name,
+    county_name        = namelsad,
+    state_abbreviation = stusps,
+    state              = state_name
+  ) %>%
+  mutate(
+    geoid = as.character(geoid),
+    geoid = str_pad(geoid, width = 5, pad = "0")
+  )
+
+hiv_california <- hiv_california %>%
+  mutate(
+    geoid = as.character(geoid),
+    geoid = str_pad(geoid, width = 5, pad = "0")
+  )
+#Join the HIV_California data to california shape files
+
+hiv_california_sf <- counties_ca  %>%
+  left_join(hiv_california, 
+            by = c("geoid", "state", "state_abbreviation", "county_name"))
+
+```
+
+
+
+## Visualization 3: [Title Here]
+
+
+
+```{r}
+# Join the 3 dataset by keys
+
+merged_data <- left_join(newdx_ca, prep_ca, by = c("year", "geoid", "state", "state_abbreviation", "county_name"))
+
+hiv_california <- left_join(merged_data, sdoh_ca, by = c("year", "geoid", "state", "state_abbreviation", "county_name"))
+
+```
+
+ 
+ 
+ 
+## Visualization 1: [Title Here]
+
+
 _Describe what this plot shows, and why it's important._
 
 ```{r}
@@ -228,6 +263,7 @@ hiv_california <- hiv_california %>%
 hiv_california_sf <- counties_ca  %>%
   left_join(hiv_california, 
             by = c("geoid", "state", "state_abbreviation", "county_name"))
+
 
 # Visualize HIV new diagnoses rate 
 
@@ -399,3 +435,6 @@ _Include any references to data sources, packages, or literature you used. If yo
 2. Reference 2
 3. Reference 3
 
+# save as csv to import into the 2026-hw-5-team-woody folder
+
+write.csv(hiv_california_sf,file = "data/hiv_california_sf.csv")
