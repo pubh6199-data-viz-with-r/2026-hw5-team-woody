@@ -1,5 +1,5 @@
 ---
-title: "Final Project: [YOUR TITLE HERE]"
+title: "Final Project: Identifying California counties for targeted HIV prevention services: A County-level Analysis of HIV burden, PrEP Coverage, and socioeconomic vulnerability"
 author: "Bao Duong and Jean Jacques Brou"
 date: "2026-06-25"
 params:
@@ -19,15 +19,22 @@ execute:
 output-dir: docs
 ---
 ```{r}
-# Load libraries and data
-library(dplyr)
-library(tidyverse)
-library(ggtext)
-````
-
-```{r}
 #| label: setup
 #| include: false
+#| eval: false
+```
+
+```{r}
+# Load the packages and data
+library(tidyverse)
+library(here)
+library(janitor)
+library(tidyverse)
+library(tmap)
+library(sf)
+library(tigris)
+library(leaflet)
+```
 
 knitr::opts_chunk$set(
     warning = FALSE,
@@ -39,7 +46,6 @@ knitr::opts_chunk$set(
     fig.retina = 3
 )
 ```
-
 ## Introduction
 
 _Briefly introduce your topic and research question._
@@ -50,29 +56,12 @@ _Briefly introduce your topic and research question._
 
 # How you will access the data: https://aidsvu.org/resources/#/datasets?years=2024&locations=county
 
-prEP
-newdx
-
 ```{r}
-#| eval: false
-# Load the packages and data
-library(tidyverse)
-library(here)
-library(janitor)
-library(tidyverse)
-library(tmap)
-library(sf)
-library(tigris)
-library(leaflet)
-
-
 sdoh <- read_csv(here("data/AIDSVu_County_SDOH_2023-20250726.csv"))
 prEP <- read_csv(here("data/AIDSVu_County_PrEP_2023_20250501.csv"))
 newdx <- read_csv(here("data/AIDSVu_County_NewDX_2023-20250726.csv"))
 
 ```   
-
-
 
 ```{r}
 #Make a value NA for data is noted as being suppressed/missing due to too low of a population size, data not shared due to a data agreement, etc
@@ -100,7 +89,6 @@ sdoh  <- sdoh  %>% clean_names()
 prEP <- prEP %>% clean_names()
 newdx <- newdx %>% clean_names()
 ```
-
 
 
 ```{r}
@@ -179,27 +167,66 @@ merged_data <- left_join(newdx_ca, prep_ca, by = c("year", "geoid", "state", "st
 
 hiv_california <- left_join(merged_data, sdoh_ca, by = c("year", "geoid", "state", "state_abbreviation", "county_name"))
 
-hiv_california
-
 ```
 
  
  
  
-## Visualizatiob 1: [Title Here]
+## Visualization 1: [Title Here]
 
 
 _Describe what this plot shows, and why it's important._
 
 ```{r}
-# your code here
+# collapse hiv new_diagnoses cases into high and low groups 
+
+hiv_california <- hiv_california %>%
+  mutate(
+    new_diagnoses_cases_bin = if_else(
+      new_diagnoses_cases >= median(new_diagnoses_cases, na.rm = TRUE),
+      "High HIV diagnoses",
+      "Low HIV diagnoses"
+    ),
+    new_diagnoses_cases_bin = factor(
+      new_diagnoses_cases_bin,
+      levels = c("Low HIV diagnoses", "High HIV diagnoses")
+    ),
+    .after = new_diagnoses_cases # with new binned variable, put after original variable 
+  )
+
 ```
 
-## Visualization 2: [Title Here]
 
-_Describe what this plot shows, and why it's important._
+```{r}
+ # create a mean output for the socioeconomic factors 
+    radar_data <- hiv_california %>%
+  mutate(across(where(is.numeric), rescale)) %>%
+  filter(county == input$county_radar) %>%
+  group_by(new_diagnoses_cases_bin) %>%
+  summarise(
+    poverty                                  = mean(poverty, na.rm = TRUE),
+    percent_less_than_high_school_education  = mean(percent_less_than_high_school_education, na.rm = TRUE),
+    percent_uninsured_under_65_years_old     = mean(percent_uninsured_under_65_years_old, na.rm = TRUE),
+    percent_unemployed                       = mean(percent_unemployed, na.rm = TRUE)
+  ) %>% 
+    mutate(across(where(is.numeric), rescale))  # normalize after summarizing
+
+# Convert to fmsb format for package 
+radar_df <- radar_data %>%
+  tibble::column_to_rownames("new_diagnoses_cases_bin") %>%
+  as.data.frame()
+
+# normalize 
+max_row <- rep(1, ncol(radar_df))
+min_row <- rep(0, ncol(radar_df))
+radar_df <- rbind(max = max_row, min = min_row, radar_df)
+
+# Clean up column names for display
+colnames(radar_df) <- c("Poverty", "< HS Education", "Uninsured", "Unemployed")
 
 
+## Visualization 2: 
+Describe what this plot shows, and why it's important._
 
 ```{r}
 # download California shape files
@@ -225,6 +252,7 @@ hiv_california <- hiv_california %>%
     geoid = as.character(geoid),
     geoid = str_pad(geoid, width = 5, pad = "0")
   )
+
 #Join the HIV_California data to california shape files
 
 hiv_california_sf <- counties_ca  %>%
@@ -233,7 +261,9 @@ hiv_california_sf <- counties_ca  %>%
 
 ```
 
+# ── Load raw data ─────────────────────────────────────────────────────────
 
+# write.csv(hiv_california, "hiv_california.csv", row.names = FALSE)
 
 ## Visualization 3: [Title Here]
 

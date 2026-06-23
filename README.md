@@ -1,15 +1,29 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/jEmP5upM)
 # Final Project: [Insert Project Title]
 
-Authors: [Your Full Name]  
-Course: PUBH 6199 – Visualizing Data with R  
-Date: [Insert Date]
+Identifying California counties for targeted HIV prevention services: A County-level Analysis of HIV burden, PrEP Coverage, and socioeconomic vulnerability"
+author: "Bao Duong and Jean Jacques Brou"
+date: "2026-06-25"
 
 ## 🔍 Project Overview
 
-[Write 2–3 sentences about your topic and what your project aims to explore or visualize.]
+The goal of this project is to collaboratively analyze and visualize the 2024 AIDSVu county-level dataset, with a focus on counties
+California HIV diagnoses rates and prEP utilization. Specifically, we will examine whether counties with higher HIV diagnosis rates also demonstrate
+higher levels of PrEP use and other sociodemographic factors, which may indicate targeted prevention efforts or greater access to HIV prevention services.
+Finally, the project will explore racial and ethnic disparities in HIV diagnosis rates across California counties. 
 
 ## 📊 Final Write-up
+
+# # Used Shinyassistant for dashboard skeleton using prompt "Create an shinyapp skeleton where I want to have three different tabs where each tab is the below sketches. I am interested in
+
+# Sketch 1: Do a radar chart with normalized socioeconomic variables (poverty, high school education percent, uninsured percent, and unemployment percent and HIV diagnosis. One group is high hiv reates and the other group is low hiv rates overlayed. There is a county dropdown
+# For the radar tab, add boxes at the top that show the percent of pvoerty, high school education, uninsured, and unemploymenet
+
+# Sketch 2: Geographic variation in HIV diagnosis rates by county using mainly choropleth maps with shape file. Shading will be done by diagnosis rate and then add size of dot to show PrEP use
+
+# Sketch 3: Grouped bar chart showing average HIV diagnosis rates among different racial groups where there is a county dropdown
+
+# I'll create a Shiny for R app skeleton with three tabs for your HIV data visualization. I'll structure it with placeholder data and logic that you can replace with your actual data.
 
 The final write-up, including code and interpretation of the visualizations, is available here:
 
