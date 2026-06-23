@@ -56,7 +56,7 @@ ui <- page_navbar(
         card_footer(
           style = "font-size:0.78rem; color:#888;",
           "Variables normalized 0–1 across all California counties.
-           Red = High HIV Rate group; Blue = Low HIV Rate group."
+           Red = High HIV Rate group; Blue = Low HIV Rate group.Source: AIDSVU 2023 New Diagnosis Dataset"
         )
       )
     )
@@ -72,8 +72,8 @@ ui <- page_navbar(
     ),
     card(
       card_body(
-        p("Map shading reflects HIV diagnosis rates per 100,000 population by county.
-           Bubble size reflects county-level PrEP utilisation."),
+        p("Map shading reflects county-level HIV diagnosis rates per 100,000 population by county.
+           Dot size reflects county-level PrEP utilisation. Only data with a high stability rating is shown."),
         p(em("Note: Replace scatter plot with sf + leaflet shapefile rendering
               for accurate county boundary representation."))
       )
@@ -101,7 +101,7 @@ ui <- page_navbar(
         plotOutput("bar_chart", height = "500px"),
         card_footer(
           style = "font-size:0.78rem; color:#888;",
-          "Rates shown per 100,000 population. Source: hiv_california dataset."
+          "Rates shown per 100,000 population. Source: AIDSVU 2023 New Diagnosis Dataset."
         )
       )
     )

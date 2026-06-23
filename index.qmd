@@ -10,14 +10,12 @@ library(sf)
 library(tigris)
 library(leaflet)
 
-
-sdoh <- read_csv(here("data/AIDSVu_County_SDOH_2023-20250726.csv"))
-prEP <- read_csv(here("data/AIDSVu_County_PrEP_2023_20250501.csv"))
-newdx <- read_csv(here("data/AIDSVu_County_NewDX_2023-20250726.csv"))
+#set wd as the 2026-hw5-team-woody folder 
+sdoh <- read_csv("data/AIDSVu_County_SDOH_2023-20250726.csv")
+prEP <- read_csv("data/AIDSVu_County_PrEP_2023_20250501.csv")
+newdx <- read_csv("data/AIDSVu_County_NewDX_2023-20250726.csv")
 
 ```   
-
-
 
 ```{r}
 #Make a value NA for data is noted as being suppressed/missing due to too low of a population size, data not shared due to a data agreement, etc
@@ -92,7 +90,7 @@ sdoh <- sdoh %>% mutate(geo_id = as.character(geo_id),
 
 
 ```{r}
-# Filter Filter each dataset to California
+# Filter  each dataset to California
 newdx_ca <- newdx %>%
   filter(state == "California") %>%
   rename(geoid = geo_id) %>%
@@ -124,14 +122,12 @@ merged_data <- left_join(newdx_ca, prep_ca, by = c("year", "geoid", "state", "st
 
 hiv_california <- left_join(merged_data, sdoh_ca, by = c("year", "geoid", "state", "state_abbreviation", "county_name"))
 
-hiv_california
-
 ```
 
  
  
  
-## Visualizatiob 1: [Title Here]
+## Visualization 1: [Title Here]
 
 
 _Describe what this plot shows, and why it's important._
@@ -176,5 +172,6 @@ hiv_california_sf <- counties_ca  %>%
   left_join(hiv_california, 
             by = c("geoid", "state", "state_abbreviation", "county_name"))
 
+# save as csv to import into the 2026-hw-5-team-woody folder
 
-
+write.csv(hiv_california_sf,file = "data/hiv_california_sf.csv")
