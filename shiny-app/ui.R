@@ -107,6 +107,24 @@ ui <- page_navbar(
     )
   ),
   
+  # ── Tab 2: Choropleth Map ─────────────────────────────────────────────────
+  nav_panel(
+    "Geographic Variation",
+    card(
+      card_header("Choropleth Map: HIV Diagnosis Rates and PrEP Use by County"),
+      full_screen = TRUE,
+      plotlyOutput("choropleth_map", height = "600px")
+    ),
+    card(
+      card_body(
+        p("Map shading reflects county-level HIV diagnosis rates per 100,000 population by county.
+           Dot size reflects county-level PrEP utilisation. Only data with a high stability rating is shown."),
+        p(em("Note: Replace scatter plot with sf + leaflet shapefile rendering
+              for accurate county boundary representation."))
+      )
+    )
+  ),
+  
   # ── Tab 3: Race/Ethnicity Bar Chart ───────────────────────────────────────
   nav_panel(
     "Racial Demographics",

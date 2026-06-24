@@ -74,10 +74,10 @@ server <- function(input, output, session) {
       county_df
     )
     
-    # Colours: High HIV diagnosis group = red, Low HIV diagnosis  = blue, county = green dashed
+    # Colours: High HIV diagnosis group = red, Low HIV diagnosis group  = blue, county = green dashed
     group_labels <- rownames(radar_df[-c(1, 2), ]) # Shinyassistant did this to temporarily drop max and min? 
     n            <- length(group_labels)
-    col_vec      <- c("#3498DB","#E74C3C","#27AE60")
+    col_vec      <- c("#E74C3C", "#3498DB", "#27AE60")
     fill_vec     <- c(
       scales::alpha("#3498d8", 0.10), # make this more transparent 
       scales::alpha("#e74c3c", 0.10),
@@ -135,6 +135,11 @@ server <- function(input, output, session) {
       need(nrow(plot_df) > 0,
            paste0("All race/ethnicity rates are suppressed for ",
                   input$county_bar, " County (too few of cases per group where numerator is less than 12)."))
+                  input$county_bar, " County (fewer than 5 cases per group)."))
+    )
+    
+    ggplot(plot_df, aes(x = race, y = hiv_rate, fill = race)) +
+      geom_col(width = 0.68, show.legend = FALSE) +
     )
     
     ggplot(plot_df, aes(x = race, y = hiv_rate, fill = race)) +

@@ -146,6 +146,16 @@ hiv_california <- hiv_california %>%
     .after = new_diagnoses_cases
   )
 
+# ── Step 2: Add county_label + pad geoid ─────────────────────────────────
+hiv_california <- hiv_california %>%
+  mutate(
+    county_label = str_remove(county_name, " County$"),  # e.g. "Los Angeles"
+    geoid        = str_pad(as.character(geoid), width = 5, pad = "0")
+  )
+
+# ── Step 3: Download CA shapefile & join (from your Rmd) ──────────────────
+counties_ca <- counties(state = "CA", cb = TRUE, year = 2023) %>%
+  clean_names() %>%
 
 
 # Pre-normalised dataset for radar (rescale numeric cols across all counties)
@@ -173,6 +183,16 @@ counties_ca <- counties(state = "CA", cb = TRUE, year = 2023) %>%
     geoid = str_pad(geoid, width = 5, pad = "0")
   )
 
+hiv_california_sf <- counties_ca %>%
+  left_join(hiv_california,
+            by = c("geoid", "state", "state_abbreviation", "county_name"))
+
+# ── Step 4: Derived objects used across tabs ───────────────────────────────
+
+# County choices for dropdowns — county_label already set above
+county_choices <- sort(unique(hiv_california$county_label))
+
+# Race rate columns → named lookup for Tab 3
 hiv_california <- hiv_california %>%
   mutate(
     geoid = as.character(geoid),
@@ -208,8 +228,11 @@ race_long <- hiv_california %>%
     values_to = "hiv_rate"
   ) %>%
   mutate(race = names(race_cols)[match(race_col, unname(race_cols))]) %>%
-  select(county_name, race, hiv_rate)
+  select(county_label, race, hiv_rate)
 
+# Pre-normalised dataset for radar (rescale numeric cols across all counties)
+hiv_norm <- hiv_california %>%
+  mutate(across(where(is.numeric), rescale))
 # for the race ethnicity tab, there are counties that have no data to display. And so create a new vector with just counties that have some data
 race_county_choices <- race_long %>%
   filter(!is.na(hiv_rate)) %>%
