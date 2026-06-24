@@ -2,8 +2,53 @@
 ui <- page_navbar(
   title = "HIV Diagnosis Analysis Dashboard — California",
   theme = bs_theme(version = 5, bootswatch = "flatly"),
+ 
+  # ── Tab 1: Choropleth Map ─────────────────────────────────────────────────
+  nav_panel(
+    "Geographic Variation",
+    
+    layout_sidebar(
+      sidebar = sidebar(
+        h5(
+          "Identifying California counties for targeted HIV prevention services:
+        A County-level Analysis of HIV burden, PrEP Coverage, and
+        socioeconomic vulnerability"
+        ),
+        
+        p(
+          "This map displays county-level HIV diagnosis rates and PrEP utilization
+        across California counties."
+        ),
+        
+        hr(),
+        
+        p(strong("Data Sources:")),
+        
+        tags$ul(
+          tags$li("AIDSVu County New Diagnoses Dataset, 2023"),
+          tags$li("AIDSVu County PrEP Dataset, 2023"),
+          tags$li("U.S. Census TIGER/Line county shapefiles")
+        ),
+        
+        hr()
+      ),
+      
+      card(
+        card_header(
+          "Choropleth Map: HIV Diagnosis Rates and PrEP Use by County"
+        ),
+        full_screen = TRUE,
+        leafletOutput("choropleth_map", height = "650px"),
+        card_footer(
+          style = "font-size:0.78rem; color:#888;",
+          "Rates are reported per 100,000 population. Counties with suppressed
+        or unreliable estimates are omitted from the map."
+        )
+      )
+    )
+  ),
   
-  # ── Tab 1: Radar Chart ────────────────────────────────────────────────────
+  # ── Tab 2: Radar Chart ────────────────────────────────────────────────────
   nav_panel(
     "Socioeconomic Factors",
     layout_sidebar(
@@ -56,11 +101,7 @@ ui <- page_navbar(
         card_footer(
           style = "font-size:0.78rem; color:#888;",
           "Variables normalized 0–1 across all California counties.
-<<<<<<< HEAD
-           Red = High HIV Rate group; Blue = Low HIV Rate group."
-=======
            Red = High HIV Rate group; Blue = Low HIV Rate group.Source: AIDSVU 2023 New Diagnosis Dataset"
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
         )
       )
     )
@@ -76,13 +117,8 @@ ui <- page_navbar(
     ),
     card(
       card_body(
-<<<<<<< HEAD
-        p("Map shading reflects HIV diagnosis rates per 100,000 population by county.
-           Bubble size reflects county-level PrEP utilisation."),
-=======
         p("Map shading reflects county-level HIV diagnosis rates per 100,000 population by county.
            Dot size reflects county-level PrEP utilisation. Only data with a high stability rating is shown."),
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
         p(em("Note: Replace scatter plot with sf + leaflet shapefile rendering
               for accurate county boundary representation."))
       )
@@ -97,8 +133,8 @@ ui <- page_navbar(
         selectInput(
           "county_bar",
           "Select County:",
-          choices  = sort(unique(hiv_california$county_name)),
-          selected = sort(unique(hiv_california$county_name))[1] # autoselects first option
+          choices  = race_county_choices,
+          selected = race_county_choices[1]  # autoselects first option
         ),
         hr(),
         p("This chart shows average HIV diagnosis rates (per 100,000) across
@@ -110,11 +146,7 @@ ui <- page_navbar(
         plotOutput("bar_chart", height = "500px"),
         card_footer(
           style = "font-size:0.78rem; color:#888;",
-<<<<<<< HEAD
-          "Rates shown per 100,000 population. Source: hiv_california dataset."
-=======
           "Rates shown per 100,000 population. Source: AIDSVU 2023 New Diagnosis Dataset."
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
         )
       )
     )

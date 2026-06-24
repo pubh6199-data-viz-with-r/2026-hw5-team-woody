@@ -15,14 +15,6 @@ library(sf)
 library(stringr)
 library(tigris)
 library(janitor)
-<<<<<<< HEAD
-
-hiv_california <- read.csv("hiv_california.csv")
-getwd()
-ls()
-
-# ── Step 1: Bin new_diagnoses_cases into High / Low (from your Rmd) ───────
-=======
 library(plotly)
 library(tidyverse)
 library(here)
@@ -140,7 +132,6 @@ hiv_california_sf <- counties_ca  %>%
 # rename some variable to match common in the HIV_California variable
 # visualization 1 Bin new_diagnoses_cases into High / Low 
 
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
 hiv_california <- hiv_california %>%
   mutate(
     new_diagnoses_cases_bin = if_else(
@@ -155,7 +146,6 @@ hiv_california <- hiv_california %>%
     .after = new_diagnoses_cases
   )
 
-<<<<<<< HEAD
 # ── Step 2: Add county_label + pad geoid ─────────────────────────────────
 hiv_california <- hiv_california %>%
   mutate(
@@ -166,7 +156,6 @@ hiv_california <- hiv_california %>%
 # ── Step 3: Download CA shapefile & join (from your Rmd) ──────────────────
 counties_ca <- counties(state = "CA", cb = TRUE, year = 2023) %>%
   clean_names() %>%
-=======
 
 
 # Pre-normalised dataset for radar (rescale numeric cols across all counties)
@@ -183,7 +172,6 @@ hiv_norm <- hiv_california %>%
 
 counties_ca <- counties(state = "CA", cb = TRUE, year = 2023) %>%
   janitor::clean_names() %>%
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
   rename(
     city_name          = name,
     county_name        = namelsad,
@@ -195,7 +183,6 @@ counties_ca <- counties(state = "CA", cb = TRUE, year = 2023) %>%
     geoid = str_pad(geoid, width = 5, pad = "0")
   )
 
-<<<<<<< HEAD
 hiv_california_sf <- counties_ca %>%
   left_join(hiv_california,
             by = c("geoid", "state", "state_abbreviation", "county_name"))
@@ -206,7 +193,6 @@ hiv_california_sf <- counties_ca %>%
 county_choices <- sort(unique(hiv_california$county_label))
 
 # Race rate columns → named lookup for Tab 3
-=======
 hiv_california <- hiv_california %>%
   mutate(
     geoid = as.character(geoid),
@@ -223,7 +209,6 @@ hiv_california_sf <- counties_ca  %>%
 county_choices <- sort(unique(hiv_california$county_name))
 
 # Visualization 3 
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
 race_cols <- c(
   "Black"              = "new_diagnoses_black_rate",
   "White"              = "new_diagnoses_white_rate",
@@ -236,24 +221,21 @@ race_cols <- c(
 
 # Long-format race data for Tab 3 bar chart
 race_long <- hiv_california %>%
-<<<<<<< HEAD
-  select(county_label, all_of(unname(race_cols))) %>%
-=======
   select(county_name, all_of(unname(race_cols))) %>%
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
   pivot_longer(
     cols      = all_of(unname(race_cols)),
     names_to  = "race_col",
     values_to = "hiv_rate"
   ) %>%
   mutate(race = names(race_cols)[match(race_col, unname(race_cols))]) %>%
-<<<<<<< HEAD
   select(county_label, race, hiv_rate)
 
 # Pre-normalised dataset for radar (rescale numeric cols across all counties)
 hiv_norm <- hiv_california %>%
   mutate(across(where(is.numeric), rescale))
-=======
-  select(county_name, race, hiv_rate)
-
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
+# for the race ethnicity tab, there are counties that have no data to display. And so create a new vector with just counties that have some data
+race_county_choices <- race_long %>%
+  filter(!is.na(hiv_rate)) %>%
+  pull(county_name) %>%
+  unique() %>%
+  sort()

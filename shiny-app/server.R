@@ -2,21 +2,12 @@
 
 server <- function(input, output, session) {
   
-<<<<<<< HEAD
-  # ── Reactive: county summary stats for value boxes (Tab 1) ───────────────
-  county_stats <- reactive({
-    req(input$county_radar)
-    
-    hiv_california %>%
-      filter(county_label == input$county_radar) %>%
-=======
   # (Tab 1) Create county summary stats for value boxes 
   county_stats <- reactive({
-    req(input$county_radar)
+    req(input$county_radar) # Stops execution if no county has been selected yet
     
     hiv_california_sf %>%
       filter(county_name == input$county_radar) %>%
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
       summarise(
         poverty      = mean(percent_living_in_poverty,               na.rm = TRUE),
         education    = mean(percent_less_than_high_school_education,  na.rm = TRUE),
@@ -25,11 +16,7 @@ server <- function(input, output, session) {
       )
   })
   
-<<<<<<< HEAD
-  # ── Value boxes (Tab 1) ───────────────────────────────────────────────────
-=======
   # Display county statistics in value boxes
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
   output$poverty_value <- renderText({
     paste0(round(county_stats()$poverty, 1), "%")
   })
@@ -46,19 +33,11 @@ server <- function(input, output, session) {
     paste0(round(county_stats()$unemployment, 1), "%")
   })
   
-<<<<<<< HEAD
-  # ── Tab 1: Radar Chart ────────────────────────────────────────────────────
-  output$radar_plot <- renderPlot({
-    req(input$county_radar)
-    
-    # Group means from pre-normalised data (your Rmd approach)
-=======
   # (Tab 1) Radar Chart 
   output$radar_plot <- renderPlot({
     req(input$county_radar)
     
     # Group means from pre-normalised data 
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
     radar_data <- hiv_norm %>%
       filter(!is.na(new_diagnoses_cases_bin)) %>%
       group_by(new_diagnoses_cases_bin) %>%
@@ -71,11 +50,7 @@ server <- function(input, output, session) {
     
     # Selected county row (normalised)
     county_row <- hiv_norm %>%
-<<<<<<< HEAD
-      filter(county_label == input$county_radar) %>%
-=======
       filter(county_name == input$county_radar) %>%
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
       summarise(
         Poverty          = mean(percent_living_in_poverty,               na.rm = TRUE),
         `< HS Education` = mean(percent_less_than_high_school_education,  na.rm = TRUE),
@@ -83,11 +58,7 @@ server <- function(input, output, session) {
         Unemployed       = mean(percent_unemployed,                       na.rm = TRUE)
       )
     
-<<<<<<< HEAD
-    # Build fmsb data frame (your Rmd approach: column_to_rownames → rbind max/min)
-=======
     # Build fmsb data frame by converting the column of binned variable to row names into standard df
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
     radar_df <- radar_data %>%
       tibble::column_to_rownames("new_diagnoses_cases_bin") %>%
       as.data.frame()
@@ -95,10 +66,7 @@ server <- function(input, output, session) {
     county_df           <- as.data.frame(county_row)
     rownames(county_df) <- input$county_radar
     
-<<<<<<< HEAD
-=======
     # max 1 or 0 
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
     radar_df <- rbind(
       max    = rep(1, ncol(radar_df)),
       min    = rep(0, ncol(radar_df)),
@@ -106,43 +74,26 @@ server <- function(input, output, session) {
       county_df
     )
     
-<<<<<<< HEAD
-    # Colours: High = red, Low = blue, county = green dashed
-    group_labels <- rownames(radar_df[-c(1, 2), ])
-    n            <- length(group_labels)
-    col_vec      <- c("#E74C3C", "#3498DB", "#27AE60")[seq_len(n)]
-=======
     # Colours: High HIV diagnosis group = red, Low HIV diagnosis group  = blue, county = green dashed
     group_labels <- rownames(radar_df[-c(1, 2), ]) # Shinyassistant did this to temporarily drop max and min? 
     n            <- length(group_labels)
     col_vec      <- c("#E74C3C", "#3498DB", "#27AE60")
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
     fill_vec     <- c(
-      scales::alpha("#E74C3C", 0.25),
-      scales::alpha("#3498DB", 0.25),
+      scales::alpha("#3498d8", 0.10), # make this more transparent 
+      scales::alpha("#e74c3c", 0.10),
       scales::alpha("#27AE60", 0.30)
-<<<<<<< HEAD
-    )[seq_len(n)]
-    lty_vec <- c(1, 1, 2)[seq_len(n)]
-    
-=======
     )
     lty_vec <- c(1, 1, 2)[seq_len(n)]
     
     # Maximize canvas area to prevent text running off
 
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
     par(mar = c(1, 1, 3, 1))
     radarchart(
       radar_df,
       axistype    = 1,
       pcol        = col_vec,
       pfcol       = fill_vec,
-<<<<<<< HEAD
-      plwd        = c(2, 2, 2.5)[seq_len(n)],
-=======
       plwd        = c(2, 2, 2.5),
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
       plty        = lty_vec,
       cglcol      = "grey80",
       cglty       = 1,
@@ -163,93 +114,6 @@ server <- function(input, output, session) {
     )
   })
   
-<<<<<<< HEAD
-  # ── Tab 2: Choropleth Map (sf shapefile from your Rmd) ───────────────────
-  pal <- colorNumeric(
-    palette  = "YlOrRd",
-    domain   = hiv_california_sf$new_diagnoses_rate,
-    na.color = "#CCCCCC"
-  )
-  
-  output$choropleth_map <- renderLeaflet({
-    # Transform to WGS84 for Leaflet
-    map_sf <- st_transform(hiv_california_sf, crs = 4326)
-    
-    leaflet(map_sf) %>%
-      addProviderTiles(providers$CartoDB.Positron) %>%
-      addPolygons(
-        fillColor   = ~pal(new_diagnoses_rate),
-        fillOpacity = 0.75,
-        color       = "#FFFFFF",
-        weight      = 1,
-        smoothFactor = 0.5,
-        highlightOptions = highlightOptions(
-          weight      = 2.5,
-          color       = "#2C3E50",
-          fillOpacity = 0.9,
-          bringToFront = TRUE
-        ),
-        label = ~lapply(paste0(
-          "<b>", county_name, "</b><br>",
-          "HIV Rate: ",
-          ifelse(is.na(new_diagnoses_rate),
-                 "<i>Suppressed</i>",
-                 paste0(new_diagnoses_rate, " per 100k")), "<br>",
-          "PrEP Users: ",
-          ifelse(is.na(county_prep_users), "<i>Suppressed</i>", county_prep_users)
-        ), htmltools::HTML)
-      ) %>%
-      addLegend(
-        pal      = pal,
-        values   = ~new_diagnoses_rate,
-        title    = "HIV Rate<br>(per 100k)",
-        position = "bottomright",
-        opacity  = 0.85,
-        na.label = "Suppressed"
-      )
-  })
-  
-  # PrEP bubble overlay — added/removed reactively
-  observe({
-    req(input$map_overlay, input$bubble_scale)
-    
-    map_sf     <- st_transform(hiv_california_sf, crs = 4326)
-    centroids  <- st_centroid(map_sf)
-    coords     <- st_coordinates(centroids)
-    prep_data  <- map_sf %>%
-      mutate(lon = coords[, 1], lat = coords[, 2]) %>%
-      filter(!is.na(county_prep_users))
-    
-    if (input$map_overlay == "Show PrEP Users") {
-      leafletProxy("choropleth_map", data = prep_data) %>%
-        clearGroup("prep_bubbles") %>%
-        addCircleMarkers(
-          lng         = ~lon,
-          lat         = ~lat,
-          radius      = ~sqrt(county_prep_users) * input$bubble_scale * 0.20,
-          fillColor   = "#2980B9",
-          fillOpacity = 0.50,
-          color       = "#1A5276",
-          weight      = 1,
-          group       = "prep_bubbles",
-          label = ~lapply(paste0(
-            "<b>", county_name, "</b><br>",
-            "PrEP Users: ", county_prep_users
-          ), htmltools::HTML)
-        )
-    } else {
-      leafletProxy("choropleth_map") %>%
-        clearGroup("prep_bubbles")
-    }
-  })
-  
-  # ── Tab 3: Race/Ethnicity Bar Chart ───────────────────────────────────────
-  output$bar_chart <- renderPlot({
-    req(input$county_bar)
-    
-    plot_df <- race_long %>%
-      filter(county_label == input$county_bar, !is.na(hiv_rate)) %>%
-=======
   # Tab 2: Chloropleth Map hold
   
   
@@ -262,7 +126,6 @@ server <- function(input, output, session) {
 
     plot_df <- race_long %>%
       filter(county_name == input$county_bar, !is.na(hiv_rate)) %>%
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
       mutate(race = factor(race, levels = c(
         "Black", "Hispanic", "White", "Asian",
         "Amer. Indian / AN", "Multiple Races", "NH / Pacific Isl."
@@ -271,19 +134,16 @@ server <- function(input, output, session) {
     validate(
       need(nrow(plot_df) > 0,
            paste0("All race/ethnicity rates are suppressed for ",
-<<<<<<< HEAD
+                  input$county_bar, " County (too few of cases per group where numerator is less than 12)."))
                   input$county_bar, " County (fewer than 5 cases per group)."))
     )
     
     ggplot(plot_df, aes(x = race, y = hiv_rate, fill = race)) +
       geom_col(width = 0.68, show.legend = FALSE) +
-=======
-                  input$county_bar, " County (too few of cases per group)."))
     )
     
     ggplot(plot_df, aes(x = race, y = hiv_rate, fill = race)) +
       geom_col(width = 0.68, show.legend = FALSE) + # legend not needed with x axis 
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
       geom_text(
         aes(label = round(hiv_rate, 1)),
         vjust = -0.45, size = 4, colour = "#333333"
@@ -301,7 +161,7 @@ server <- function(input, output, session) {
       labs(
         title    = paste("HIV Diagnosis Rates by Race/Ethnicity —",
                          input$county_bar, "County"),
-        subtitle = "Diagnoses per 100,000 population (2023). Suppressed groups omitted.",
+        subtitle = "Diagnoses per 100,000 population (2023). Counties with suppressed racial groups are omitted.",
         x        = NULL,
         y        = "Rate per 100,000"
       ) +
