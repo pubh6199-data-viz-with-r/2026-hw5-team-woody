@@ -2,8 +2,53 @@
 ui <- page_navbar(
   title = "HIV Diagnosis Analysis Dashboard — California",
   theme = bs_theme(version = 5, bootswatch = "flatly"),
+ 
+  # ── Tab 1: Choropleth Map ─────────────────────────────────────────────────
+  nav_panel(
+    "Geographic Variation",
+    
+    layout_sidebar(
+      sidebar = sidebar(
+        h5(
+          "Identifying California counties for targeted HIV prevention services:
+        A County-level Analysis of HIV burden, PrEP Coverage, and
+        socioeconomic vulnerability"
+        ),
+        
+        p(
+          "This map displays county-level HIV diagnosis rates and PrEP utilization
+        across California counties."
+        ),
+        
+        hr(),
+        
+        p(strong("Data Sources:")),
+        
+        tags$ul(
+          tags$li("AIDSVu County New Diagnoses Dataset, 2023"),
+          tags$li("AIDSVu County PrEP Dataset, 2023"),
+          tags$li("U.S. Census TIGER/Line county shapefiles")
+        ),
+        
+        hr()
+      ),
+      
+      card(
+        card_header(
+          "Choropleth Map: HIV Diagnosis Rates and PrEP Use by County"
+        ),
+        full_screen = TRUE,
+        leafletOutput("choropleth_map", height = "650px"),
+        card_footer(
+          style = "font-size:0.78rem; color:#888;",
+          "Rates are reported per 100,000 population. Counties with suppressed
+        or unreliable estimates are omitted from the map."
+        )
+      )
+    )
+  ),
   
-  # ── Tab 1: Radar Chart ────────────────────────────────────────────────────
+  # ── Tab 2: Radar Chart ────────────────────────────────────────────────────
   nav_panel(
     "Socioeconomic Factors",
     layout_sidebar(
@@ -62,24 +107,6 @@ ui <- page_navbar(
     )
   ),
   
-  # ── Tab 2: Choropleth Map ─────────────────────────────────────────────────
-  nav_panel(
-    "Geographic Variation",
-    card(
-      card_header("Choropleth Map: HIV Diagnosis Rates and PrEP Use by County"),
-      full_screen = TRUE,
-      plotlyOutput("choropleth_map", height = "600px")
-    ),
-    card(
-      card_body(
-        p("Map shading reflects county-level HIV diagnosis rates per 100,000 population by county.
-           Dot size reflects county-level PrEP utilisation. Only data with a high stability rating is shown."),
-        p(em("Note: Replace scatter plot with sf + leaflet shapefile rendering
-              for accurate county boundary representation."))
-      )
-    )
-  ),
-  
   # ── Tab 3: Race/Ethnicity Bar Chart ───────────────────────────────────────
   nav_panel(
     "Racial Demographics",
@@ -88,8 +115,8 @@ ui <- page_navbar(
         selectInput(
           "county_bar",
           "Select County:",
-          choices  = sort(unique(hiv_california$county_name)),
-          selected = sort(unique(hiv_california$county_name))[1] # autoselects first option
+          choices  = race_county_choices,
+          selected = race_county_choices[1]  # autoselects first option
         ),
         hr(),
         p("This chart shows average HIV diagnosis rates (per 100,000) across

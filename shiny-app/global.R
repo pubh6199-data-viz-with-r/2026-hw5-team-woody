@@ -210,3 +210,9 @@ race_long <- hiv_california %>%
   mutate(race = names(race_cols)[match(race_col, unname(race_cols))]) %>%
   select(county_name, race, hiv_rate)
 
+# for the race ethnicity tab, there are counties that have no data to display. And so create a new vector with just counties that have some data
+race_county_choices <- race_long %>%
+  filter(!is.na(hiv_rate)) %>%
+  pull(county_name) %>%
+  unique() %>%
+  sort()
