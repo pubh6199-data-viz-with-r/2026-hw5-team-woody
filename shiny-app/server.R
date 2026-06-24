@@ -2,12 +2,21 @@
 
 server <- function(input, output, session) {
   
+<<<<<<< HEAD
   # ── Reactive: county summary stats for value boxes (Tab 1) ───────────────
   county_stats <- reactive({
     req(input$county_radar)
     
     hiv_california %>%
       filter(county_label == input$county_radar) %>%
+=======
+  # (Tab 1) Create county summary stats for value boxes 
+  county_stats <- reactive({
+    req(input$county_radar)
+    
+    hiv_california_sf %>%
+      filter(county_name == input$county_radar) %>%
+>>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
       summarise(
         poverty      = mean(percent_living_in_poverty,               na.rm = TRUE),
         education    = mean(percent_less_than_high_school_education,  na.rm = TRUE),
@@ -16,7 +25,11 @@ server <- function(input, output, session) {
       )
   })
   
+<<<<<<< HEAD
   # ── Value boxes (Tab 1) ───────────────────────────────────────────────────
+=======
+  # Display county statistics in value boxes
+>>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
   output$poverty_value <- renderText({
     paste0(round(county_stats()$poverty, 1), "%")
   })
@@ -33,11 +46,19 @@ server <- function(input, output, session) {
     paste0(round(county_stats()$unemployment, 1), "%")
   })
   
+<<<<<<< HEAD
   # ── Tab 1: Radar Chart ────────────────────────────────────────────────────
   output$radar_plot <- renderPlot({
     req(input$county_radar)
     
     # Group means from pre-normalised data (your Rmd approach)
+=======
+  # (Tab 1) Radar Chart 
+  output$radar_plot <- renderPlot({
+    req(input$county_radar)
+    
+    # Group means from pre-normalised data 
+>>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
     radar_data <- hiv_norm %>%
       filter(!is.na(new_diagnoses_cases_bin)) %>%
       group_by(new_diagnoses_cases_bin) %>%
@@ -50,7 +71,11 @@ server <- function(input, output, session) {
     
     # Selected county row (normalised)
     county_row <- hiv_norm %>%
+<<<<<<< HEAD
       filter(county_label == input$county_radar) %>%
+=======
+      filter(county_name == input$county_radar) %>%
+>>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
       summarise(
         Poverty          = mean(percent_living_in_poverty,               na.rm = TRUE),
         `< HS Education` = mean(percent_less_than_high_school_education,  na.rm = TRUE),
@@ -58,7 +83,11 @@ server <- function(input, output, session) {
         Unemployed       = mean(percent_unemployed,                       na.rm = TRUE)
       )
     
+<<<<<<< HEAD
     # Build fmsb data frame (your Rmd approach: column_to_rownames → rbind max/min)
+=======
+    # Build fmsb data frame by converting the column of binned variable to row names into standard df
+>>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
     radar_df <- radar_data %>%
       tibble::column_to_rownames("new_diagnoses_cases_bin") %>%
       as.data.frame()
@@ -66,6 +95,10 @@ server <- function(input, output, session) {
     county_df           <- as.data.frame(county_row)
     rownames(county_df) <- input$county_radar
     
+<<<<<<< HEAD
+=======
+    # max 1 or 0 
+>>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
     radar_df <- rbind(
       max    = rep(1, ncol(radar_df)),
       min    = rep(0, ncol(radar_df)),
@@ -73,24 +106,43 @@ server <- function(input, output, session) {
       county_df
     )
     
+<<<<<<< HEAD
     # Colours: High = red, Low = blue, county = green dashed
     group_labels <- rownames(radar_df[-c(1, 2), ])
     n            <- length(group_labels)
     col_vec      <- c("#E74C3C", "#3498DB", "#27AE60")[seq_len(n)]
+=======
+    # Colours: High HIV diagnosis group = red, Low HIV diagnosis group  = blue, county = green dashed
+    group_labels <- rownames(radar_df[-c(1, 2), ]) # Shinyassistant did this to temporarily drop max and min? 
+    n            <- length(group_labels)
+    col_vec      <- c("#E74C3C", "#3498DB", "#27AE60")
+>>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
     fill_vec     <- c(
       scales::alpha("#E74C3C", 0.25),
       scales::alpha("#3498DB", 0.25),
       scales::alpha("#27AE60", 0.30)
+<<<<<<< HEAD
     )[seq_len(n)]
     lty_vec <- c(1, 1, 2)[seq_len(n)]
     
+=======
+    )
+    lty_vec <- c(1, 1, 2)[seq_len(n)]
+    
+    # Maximize canvas area to prevent text running off
+
+>>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
     par(mar = c(1, 1, 3, 1))
     radarchart(
       radar_df,
       axistype    = 1,
       pcol        = col_vec,
       pfcol       = fill_vec,
+<<<<<<< HEAD
       plwd        = c(2, 2, 2.5)[seq_len(n)],
+=======
+      plwd        = c(2, 2, 2.5),
+>>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
       plty        = lty_vec,
       cglcol      = "grey80",
       cglty       = 1,
@@ -111,6 +163,7 @@ server <- function(input, output, session) {
     )
   })
   
+<<<<<<< HEAD
   # ── Tab 2: Choropleth Map (sf shapefile from your Rmd) ───────────────────
   pal <- colorNumeric(
     palette  = "YlOrRd",
@@ -196,6 +249,20 @@ server <- function(input, output, session) {
     
     plot_df <- race_long %>%
       filter(county_label == input$county_bar, !is.na(hiv_rate)) %>%
+=======
+  # Tab 2: Chloropleth Map hold
+  
+  
+  
+  # Tab 3: Race/Ethnicity Bar Chart 
+  output$bar_chart <- renderPlot({
+    req(input$county_bar) # Stops execution if no county has been selected yet 
+    
+  # Keeps only rows matching the user-selected county and where hiv_rate is not NA (removes suppressed/missing groups)
+
+    plot_df <- race_long %>%
+      filter(county_name == input$county_bar, !is.na(hiv_rate)) %>%
+>>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
       mutate(race = factor(race, levels = c(
         "Black", "Hispanic", "White", "Asian",
         "Amer. Indian / AN", "Multiple Races", "NH / Pacific Isl."
@@ -204,11 +271,19 @@ server <- function(input, output, session) {
     validate(
       need(nrow(plot_df) > 0,
            paste0("All race/ethnicity rates are suppressed for ",
+<<<<<<< HEAD
                   input$county_bar, " County (fewer than 5 cases per group)."))
     )
     
     ggplot(plot_df, aes(x = race, y = hiv_rate, fill = race)) +
       geom_col(width = 0.68, show.legend = FALSE) +
+=======
+                  input$county_bar, " County (too few of cases per group)."))
+    )
+    
+    ggplot(plot_df, aes(x = race, y = hiv_rate, fill = race)) +
+      geom_col(width = 0.68, show.legend = FALSE) + # legend not needed with x axis 
+>>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
       geom_text(
         aes(label = round(hiv_rate, 1)),
         vjust = -0.45, size = 4, colour = "#333333"

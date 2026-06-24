@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 title: "Final Project: Identifying California counties for targeted HIV prevention services: A County-level Analysis of HIV burden, PrEP Coverage, and socioeconomic vulnerability"
 author: "Bao Duong and Jean Jacques Brou"
@@ -25,6 +26,10 @@ output-dir: docs
 ```
 
 ```{r}
+=======
+``{r}
+#| eval: false
+>>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
 # Load the packages and data
 library(tidyverse)
 library(here)
@@ -34,6 +39,7 @@ library(tmap)
 library(sf)
 library(tigris)
 library(leaflet)
+<<<<<<< HEAD
 ```
 
 knitr::opts_chunk$set(
@@ -55,8 +61,30 @@ _Briefly introduce your topic and research question._
 # Source of the data: We will use AIDSVu Dataset 2024
 
 # How you will access the data: https://aidsvu.org/resources/#/datasets?years=2024&locations=county
+=======
+>>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
 
 ```{r}
+<<<<<<< HEAD
+=======
+#| eval: false
+# Load the packages and data
+library(tidyverse)
+library(here)
+library(janitor)
+library(tidyverse)
+library(tmap)
+library(sf)
+library(tigris)
+library(leaflet)
+library(htmltools)
+library(scales)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+
+>>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
 sdoh <- read_csv(here("data/AIDSVu_County_SDOH_2023-20250726.csv"))
 prEP <- read_csv(here("data/AIDSVu_County_PrEP_2023_20250501.csv"))
 newdx <- read_csv(here("data/AIDSVu_County_NewDX_2023-20250726.csv"))
@@ -175,9 +203,9 @@ hiv_california <- left_join(merged_data, sdoh_ca, by = c("year", "geoid", "state
 ## Visualization 1: [Title Here]
 
 
-_Describe what this plot shows, and why it's important._
 
 ```{r}
+<<<<<<< HEAD
 # collapse hiv new_diagnoses cases into high and low groups 
 
 hiv_california <- hiv_california %>%
@@ -223,6 +251,18 @@ radar_df <- rbind(max = max_row, min = min_row, radar_df)
 
 # Clean up column names for display
 colnames(radar_df) <- c("Poverty", "< HS Education", "Uninsured", "Unemployed")
+=======
+# Converting geo_id and year from numeric tpo character
+newdx <- newdx %>% mutate(geo_id = as.character(geo_id),
+                          year = as.character(year))
+prEP <- prEP %>% mutate(geo_id = as.character(geo_id),
+                        year = as.character(year))
+sdoh <- sdoh %>% mutate(geo_id = as.character(geo_id),
+                        year = as.character(year))
+```
+
+
+>>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
 
 
 ## Visualization 2: 
@@ -267,13 +307,211 @@ hiv_california_sf <- counties_ca  %>%
 
 ## Visualization 3: [Title Here]
 
+
+
+```{r}
+# Join the 3 dataset by keys
+
+merged_data <- left_join(newdx_ca, prep_ca, by = c("year", "geoid", "state", "state_abbreviation", "county_name"))
+
+hiv_california <- left_join(merged_data, sdoh_ca, by = c("year", "geoid", "state", "state_abbreviation", "county_name"))
+
+```
+
+ 
+ 
+ 
+## Visualization 1: [Title Here]
+
+
 _Describe what this plot shows, and why it's important._
 
 ```{r}
 # your code here
 ```
 
+## Visualization 2: [Title Here]
+
+_Describe what this plot shows, and why it's important._
+
+
+
+```{r}
+# download California shape files
+# use "clean_names" to transform variables name in uppercase letter to lowercase
+# rename some variable to match common in the HIV_California variable
+# standardize the geoid to 5 characters in both hiv_california and counties_ca
+
+counties_ca <- counties(state = "CA", cb = TRUE, year = 2023) %>%
+  janitor::clean_names() %>%
+  rename(
+    city_name          = name,
+    county_name        = namelsad,
+    state_abbreviation = stusps,
+    state              = state_name
+  ) %>%
+  mutate(
+    geoid = as.character(geoid),
+    geoid = str_pad(geoid, width = 5, pad = "0")
+  )
+
+hiv_california <- hiv_california %>%
+  mutate(
+    geoid = as.character(geoid),
+    geoid = str_pad(geoid, width = 5, pad = "0")
+  )
+#Join the HIV_California data to california shape files
+
+hiv_california_sf <- counties_ca  %>%
+  left_join(hiv_california, 
+            by = c("geoid", "state", "state_abbreviation", "county_name"))
+
+
+# Visualize HIV new diagnoses rate 
+
+```
+
+
+
+## Visualization 3: [Title Here]
+
+_Describe what this plot shows, and why it's important._
+
+  
+```{r}
+tmap_mode("plot")
+tm_shape(hiv_california_sf) +
+  tm_polygons("county_prep_rate", palette = "Reds") +
+                tm_layout(title = "County prep rate")
+```
+
+
+
+```{r}
+tmap_mode("plot")
+tm_shape(hiv_california_sf) +
+  tm_polygons("new_diagnoses_rate", palette = "Reds") +
+                tm_layout(title = "new diagnoses rate")
+```
+
+
+
+```{r}
+
+# use st_transform to convert my data into crs
+hiv_california_sf = sf::st_transform(hiv_california_sf, 4326)
+
+# Create point layer only for prep rate
+prep_points <- hiv_california_sf %>%
+  sf::st_point_on_surface()
+
+hiv_pal <- colorBin("Reds", domain = hiv_california_sf$new_diagnoses_rate, 
+                    bins = c(0, 5, 10, 15, 20, 25, 30),
+                    na.color = "gray") # using the sf object with hiv_california_sf
+
+
+prep_pal <- colorBin(
+  palette = "black",
+  domain = hiv_california_sf$county_prep_rate,
+  bins = c(0, 99, 199, 299, 399, 500),
+  na.color = "gray")
+
+
+leaflet(hiv_california_sf) %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+ 
+  addPolygons(fillColor = ~hiv_pal(new_diagnoses_rate ),color = "white", weight = 1, fillOpacity = 0.9,  
+        
+              label = ~paste0( county_name, "<br>",
+        "New Diagnosis Rate:", round(new_diagnoses_rate , 1), "<br>",
+        "New HIV cases:", new_diagnoses_cases, "<br>",
+        "County PrEP rate:" , round(county_prep_rate, 1), "<br>",
+        "County prEP Users:" , county_prep_users ) %>% lapply(htmltools::HTML)
+              
+      ) %>%
+  
+     # Dots represent county_prep_rate only
+  addCircleMarkers(
+    data = prep_points,
+    radius = ~sqrt(county_prep_rate) / 3,
+    fillColor = ~prep_pal(county_prep_rate),
+    fillOpacity = 0.9,
+    stroke = TRUE,
+    color = "black",
+    weight = 1,
+  ) %>%
+addLegend(pal = hiv_pal, values = ~ new_diagnoses_rate , title = "New Diagnosis Rate", position =  "bottomright") %>% #added legend
+  
+  addLegend(
+    pal = prep_pal,
+    values = ~county_prep_rate,
+    title = "County PrEP Rate",
+    position = "bottomleft"
+  ) %>%
+
+setView(lng = -119, 
+        lat = 37, 
+        zoom = 5.5
+        )
+```
+
+
+line break
+
+```{r}
+
+hiv_race_long <- hiv_california %>%
+  summarise(
+    new_diagnoses_black_rate = mean(new_diagnoses_black_rate, na.rm = TRUE),
+    new_diagnoses_white_rate = mean(new_diagnoses_white_rate, na.rm = TRUE),
+    new_diagnoses_hispanic_rate = mean(new_diagnoses_hispanic_rate, na.rm = TRUE),
+    new_diagnoses_asian_rate = mean(new_diagnoses_asian_rate, na.rm = TRUE),
+    new_diagnoses_native_hawaiian_other_pacific_islander_rate =
+      mean(new_diagnoses_native_hawaiian_other_pacific_islander_rate, na.rm = TRUE),
+    new_diagnoses_multiple_races_rate =
+      mean(new_diagnoses_multiple_races_rate, na.rm = TRUE),
+    new_diagnoses_american_indian_alaska_native_rate =
+      mean(new_diagnoses_american_indian_alaska_native_rate, na.rm = TRUE)
+  ) %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = "race",
+    values_to = "rate"
+  ) %>%
+  mutate(
+    race = recode(
+      race,
+      new_diagnoses_black_rate = "Black",
+      new_diagnoses_white_rate = "White",
+      new_diagnoses_hispanic_rate = "Hispanic/Latino",
+      new_diagnoses_asian_rate = "Asian",
+      new_diagnoses_native_hawaiian_other_pacific_islander_rate =
+        "Native Hawaiian / Other Pacific Islander",
+      new_diagnoses_multiple_races_rate = "Multiple races",
+      new_diagnoses_american_indian_alaska_native_rate =
+        "American Indian / Alaska Native"
+    )
+  )
+ggplot(hiv_race_long, aes(x = race, y = rate, fill = race)) +
+  geom_col() +
+  geom_text(aes(label = round(rate)), vjust = 1.5, color = "white") +
+  labs(
+    title = "HIV diagnosis rate by race/ethnicity (California 2023)",
+    x = "Race / ethnicity",
+    y = "Diagnosis rate (per 100,000)"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    axis.text.x = element_text(angle = 30, hjust = 1)
+  )
+```
+
+
+
 ## OR Shiny app: [Title Here]
+
+
+Dodged bar chart to display prep users, prep rate by race
 
 _If you choose to create a Shiny app, describe the app's purpose and functionality. Save your code inside the shiny-app/ folder, replace the URL below with your app's URL_
 
@@ -299,3 +537,6 @@ _Include any references to data sources, packages, or literature you used. If yo
 2. Reference 2
 3. Reference 3
 
+# save as csv to import into the 2026-hw-5-team-woody folder
+
+write.csv(hiv_california_sf,file = "data/hiv_california_sf.csv")
