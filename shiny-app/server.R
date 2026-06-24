@@ -6,7 +6,7 @@ server <- function(input, output, session) {
   county_stats <- reactive({
     req(input$county_radar) # Stops execution if no county has been selected yet
     
-    hiv_california_sf %>%
+    hiv_california %>%
       filter(county_name == input$county_radar) %>%
       summarise(
         poverty      = mean(percent_living_in_poverty,               na.rm = TRUE),
@@ -135,11 +135,6 @@ server <- function(input, output, session) {
       need(nrow(plot_df) > 0,
            paste0("All race/ethnicity rates are suppressed for ",
                   input$county_bar, " County (too few of cases per group where numerator is less than 12)."))
-                  input$county_bar, " County (fewer than 5 cases per group)."))
-    )
-    
-    ggplot(plot_df, aes(x = race, y = hiv_rate, fill = race)) +
-      geom_col(width = 0.68, show.legend = FALSE) +
     )
     
     ggplot(plot_df, aes(x = race, y = hiv_rate, fill = race)) +

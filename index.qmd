@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 title: "Final Project: Identifying California counties for targeted HIV prevention services: A County-level Analysis of HIV burden, PrEP Coverage, and socioeconomic vulnerability"
 author: "Bao Duong and Jean Jacques Brou"
@@ -26,10 +25,7 @@ output-dir: docs
 ```
 
 ```{r}
-=======
-``{r}
 #| eval: false
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
 # Load the packages and data
 library(tidyverse)
 library(here)
@@ -39,7 +35,6 @@ library(tmap)
 library(sf)
 library(tigris)
 library(leaflet)
-<<<<<<< HEAD
 ```
 
 knitr::opts_chunk$set(
@@ -54,19 +49,21 @@ knitr::opts_chunk$set(
 ```
 ## Introduction
 
-_Briefly introduce your topic and research question._
+Topic : Identifying California counties for targeted HIV prevention services: A County-level Analysis of HIV Burden, PrEP Coverage, and Socioeconomic Vulnerability 
+
+Data-driven approaches can help inform targeted HIV interventions in communities with a high burden of HIV infections and low PrEP utilization. Therefore, this project seeks to identify potential priority counties in California for targeted HIV prevention services using the 2023 AIDSVu datasets. We will explore county-level patterns of HIV burden, PrEP utilization, and socioeconomic vulnerability by answering the following research questions:   
+1. Which county-level socioeconomic factors (e.g., percent living in poverty,  education attainment,  uninsured rate under 65 years old, and unemployment) are associated with higher HIV diagnosis rates in California?   
+2. How do  HIV diagnosis rates vary across California counties? Do counties with higher HIV diagnosis rates also have higher PrEP utilization? 
+3. Do racial  disparities in HIV diagnosis rates exist across California counties?
+
 
 ## Data
 
 # Source of the data: We will use AIDSVu Dataset 2024
 
 # How you will access the data: https://aidsvu.org/resources/#/datasets?years=2024&locations=county
-=======
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
 
 ```{r}
-<<<<<<< HEAD
-=======
 #| eval: false
 # Load the packages and data
 library(tidyverse)
@@ -83,8 +80,6 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 
-
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
 sdoh <- read_csv(here("data/AIDSVu_County_SDOH_2023-20250726.csv"))
 prEP <- read_csv(here("data/AIDSVu_County_PrEP_2023_20250501.csv"))
 newdx <- read_csv(here("data/AIDSVu_County_NewDX_2023-20250726.csv"))
@@ -200,12 +195,12 @@ hiv_california <- left_join(merged_data, sdoh_ca, by = c("year", "geoid", "state
  
  
  
-## Visualization 1: [Title Here]
+## Visualization 1: Radar Chart of Socioeonomic Variables and Comparison to High or Low HIV Diagnosis rates 
 
+This plot shows cards that show the average percents for each county for poverty, less than high school education, uninsured rate, and unemployment rate for 2023. Also, it shows a radar chart that normalized these soceocnomic factor from 0 to 1 across all counties. It also compares to a high and low HIV diagnosis group (seperated by median). There appears to be a relationship between having a less than High School education and higher HIV diagnosis rates for California counties. There appears to not be a strong relationship for poverty, unemployment, and uninsured rates for HIV diagnosis. 
 
 
 ```{r}
-<<<<<<< HEAD
 # collapse hiv new_diagnoses cases into high and low groups 
 
 hiv_california <- hiv_california %>%
@@ -251,7 +246,7 @@ radar_df <- rbind(max = max_row, min = min_row, radar_df)
 
 # Clean up column names for display
 colnames(radar_df) <- c("Poverty", "< HS Education", "Uninsured", "Unemployed")
-=======
+
 # Converting geo_id and year from numeric tpo character
 newdx <- newdx %>% mutate(geo_id = as.character(geo_id),
                           year = as.character(year))
@@ -260,10 +255,6 @@ prEP <- prEP %>% mutate(geo_id = as.character(geo_id),
 sdoh <- sdoh %>% mutate(geo_id = as.character(geo_id),
                         year = as.character(year))
 ```
-
-
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
-
 
 ## Visualization 2: 
 Describe what this plot shows, and why it's important._
@@ -301,13 +292,11 @@ hiv_california_sf <- counties_ca  %>%
 
 ```
 
-# ── Load raw data ─────────────────────────────────────────────────────────
 
-# write.csv(hiv_california, "hiv_california.csv", row.names = FALSE)
+## Visualization 3: Bar Chart of HIV diagnosis Rates among Different racial groups 
 
-## Visualization 3: [Title Here]
-
-
+This bar chart shows the different HIV diagnosis rates by race for each county. For most counties, Black groups experience much higher HIV diagnois rates where it was about 3-4 times more than their White counterparts. Hispanic groups had twice as high diagnosis rates as their White Counterparts. For some counties, Multiple Races, and NH Pacific Islander 
+also were at least twice as high as their White counterparts. Asian groups had less HIV diagnosis rates than their White counterparts. 
 
 ```{r}
 # Join the 3 dataset by keys
@@ -324,7 +313,6 @@ hiv_california <- left_join(merged_data, sdoh_ca, by = c("year", "geoid", "state
 ## Visualization 1: [Title Here]
 
 
-_Describe what this plot shows, and why it's important._
 
 ```{r}
 # your code here
@@ -508,7 +496,7 @@ ggplot(hiv_race_long, aes(x = race, y = rate, fill = race)) +
 
 
 
-## OR Shiny app: [Title Here]
+## OR Shiny app: Identifying California counties for targeted HIV prevention services: A County-level Analysis of HIV burden, PrEP Coverage, and socioeconomic vulnerability
 
 
 Dodged bar chart to display prep users, prep rate by race
@@ -517,13 +505,10 @@ _If you choose to create a Shiny app, describe the app's purpose and functionali
 
 [Click here to open the interactive Shiny app](https://cindyhu.shinyapps.io/two-files-app/)
 
-## Interpretation
-
-_Summarize your key findings. What do your visualizations reveal?_
 
 ## Limitations
 
-_Discuss any data quality or design limitations._
+We had to use 2023 as that was the most recent year available for AIDSVu for their HIV diagnosis, PrEP, and socioeconomic factors. A good amount of the data was suppressed due to cases being too low to share in a dataset or the state department requested to not share to AIDSVu. The dataset also shared rates for HIV diagnosis and PrEP, but the rates had a related rate stability variable that directed us to view the rate with caution due to cases being too low (for example, American Indian for many counties) and so we mutated the dataset to remove those low confidence values from the visualizations. We also did not have PrEP rate by race and so we were unable to make a stronger analysis to consider potential interplay of race to PrEP to HIV diagonosis.  Finally, our chloropleth map analyzed by counties, but perhaps there was a better way to analyze rates and relationships more meaningfully  by population hubs in California.    
 
 ## Conclusion
 
@@ -533,10 +518,16 @@ _Wrap up your project with a takeaway message or next steps._
 
 _Include any references to data sources, packages, or literature you used. If your visualization design is inspired by someone else's work, cite those too._
 
-1. Reference 1
-2. Reference 2
-3. Reference 3
+1. Aidsvsu County dataset for 2023 for new diagosis rates, PrEP use, and SDOH factors 
+2. U.S. Census TIGER/Line county shapefiles
+3. Radar Chart reference https://communityconnector.mathematica.org/
+4. Shinyapp assistant with prompt "Give skeleton example for these three visualizations Sketch 1: Radar chart with 4 normalized socioeconomic variables and grouped by high or low HIV diagnosis, determined by if it is higher or lower than the median 
+ 
+Sketch 2: Geographic variation in HIV diagnosis rates by county using a choropleth maps. Shading will be done by diagnosis rate and then add size of dot to show high or low PrEP use. 
 
-# save as csv to import into the 2026-hw-5-team-woody folder
+Sketch 3: Grouped bar chart showing average HIV diagnosis rates among different racial groups using the dataset of all the California counties. 
 
-write.csv(hiv_california_sf,file = "data/hiv_california_sf.csv")
+
+
+
+

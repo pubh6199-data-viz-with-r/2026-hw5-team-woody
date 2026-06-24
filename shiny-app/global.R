@@ -100,7 +100,7 @@ merged_data <- left_join(newdx_ca, prep_ca, by = c("year", "geoid", "state", "st
 
 hiv_california <- left_join(merged_data, sdoh_ca, by = c("year", "geoid", "state", "state_abbreviation", "county_name"))
 
-# download California shape files
+# For visualization 1 download California shape files
 # use "clean_names" to transform variables name in uppercase letter to lowercase
 # rename some variable to match common in the HIV_California variable
 
@@ -122,6 +122,7 @@ hiv_california <- hiv_california %>%
     geoid = as.character(geoid),
     geoid = str_pad(geoid, width = 5, pad = "0")
   )
+
 #Join the HIV_California data to california shape files
 
 hiv_california_sf <- counties_ca  %>%
@@ -130,7 +131,7 @@ hiv_california_sf <- counties_ca  %>%
 
 
 # rename some variable to match common in the HIV_California variable
-# visualization 1 Bin new_diagnoses_cases into High / Low 
+# visualization 2 Bin new_diagnoses_cases into High / Low 
 
 hiv_california <- hiv_california %>%
   mutate(
@@ -146,24 +147,17 @@ hiv_california <- hiv_california %>%
     .after = new_diagnoses_cases
   )
 
-# ── Step 2: Add county_label + pad geoid ─────────────────────────────────
 hiv_california <- hiv_california %>%
   mutate(
-    county_label = str_remove(county_name, " County$"),  # e.g. "Los Angeles"
+    county_name = str_remove(county_name, " County$"),  # e.g. "Los Angeles"
     geoid        = str_pad(as.character(geoid), width = 5, pad = "0")
   )
 
-# ── Step 3: Download CA shapefile & join (from your Rmd) ──────────────────
 counties_ca <- counties(state = "CA", cb = TRUE, year = 2023) %>%
-  clean_names() %>%
+  clean_names() 
 
 
-# Pre-normalised dataset for radar (rescale numeric cols across all counties)
-hiv_norm <- hiv_california %>%
-  mutate(across(where(is.numeric), rescale))
-
-
-# for visualization 2 California shape files
+# for visualization 1 California shape files
 # use "clean_names" to transform variables name in uppercase letter to lowercase
 # download California shape files
 # use "clean_names" to transform variables name in uppercase letter to lowercase
@@ -187,17 +181,16 @@ hiv_california_sf <- counties_ca %>%
   left_join(hiv_california,
             by = c("geoid", "state", "state_abbreviation", "county_name"))
 
-# ── Step 4: Derived objects used across tabs ───────────────────────────────
+# County choices for dropdowns 
+county_choices <- sort(unique(hiv_california$county_name))
 
-# County choices for dropdowns — county_label already set above
-county_choices <- sort(unique(hiv_california$county_label))
-
-# Race rate columns → named lookup for Tab 3
+# Race rate columns 
 hiv_california <- hiv_california %>%
   mutate(
     geoid = as.character(geoid),
     geoid = str_pad(geoid, width = 5, pad = "0")
   )
+
 #Join the HIV_California data to california shape files
 
 hiv_california_sf <- counties_ca  %>%
@@ -228,11 +221,13 @@ race_long <- hiv_california %>%
     values_to = "hiv_rate"
   ) %>%
   mutate(race = names(race_cols)[match(race_col, unname(race_cols))]) %>%
-  select(county_label, race, hiv_rate)
+  select(county_name, race, hiv_rate)
 
 # Pre-normalised dataset for radar (rescale numeric cols across all counties)
 hiv_norm <- hiv_california %>%
   mutate(across(where(is.numeric), rescale))
+
+
 # for the race ethnicity tab, there are counties that have no data to display. And so create a new vector with just counties that have some data
 race_county_choices <- race_long %>%
   filter(!is.na(hiv_rate)) %>%
