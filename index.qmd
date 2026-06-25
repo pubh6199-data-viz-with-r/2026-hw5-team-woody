@@ -197,7 +197,7 @@ hiv_california <- left_join(merged_data, sdoh_ca, by = c("year", "geoid", "state
  
 ## Visualization 1: Radar Chart of Socioeonomic Variables and Comparison to High or Low HIV Diagnosis rates 
 
-This plot shows cards that show the average percents for each county for poverty, less than high school education, uninsured rate, and unemployment rate for 2023. Also, it shows a radar chart that normalized these soceocnomic factor from 0 to 1 across all counties. It also compares to a high and low HIV diagnosis group (seperated by median). There appears to be a relationship between having a less than High School education and higher HIV diagnosis rates for California counties. There appears to not be a strong relationship for poverty, unemployment, and uninsured rates for HIV diagnosis. 
+This plot shows cards that show the average percents for each county for poverty, less than high school education, uninsured rate, and unemployment rate for 2023. Also, it shows a radar chart that normalized these socioeconomic factors from 0 to 1 across all counties. It also compares to a high and low HIV diagnosis group (separated by median). There appears to be a relationship between having a less than High School education and higher HIV diagnosis rates for California counties. There appears to not be a strong relationship for poverty, unemployment, and uninsured rates for HIV diagnosis. 
 
 
 ```{r}
@@ -218,6 +218,8 @@ hiv_california <- hiv_california %>%
   )
 
 ```
+
+
 
 
 ```{r}
@@ -293,10 +295,6 @@ hiv_california_sf <- counties_ca  %>%
 ```
 
 
-## Visualization 3: Bar Chart of HIV diagnosis Rates among Different racial groups 
-
-This bar chart shows the different HIV diagnosis rates by race for each county. For most counties, Black groups experience much higher HIV diagnois rates where it was about 3-4 times more than their White counterparts. Hispanic groups had twice as high diagnosis rates as their White Counterparts. For some counties, Multiple Races, and NH Pacific Islander 
-also were at least twice as high as their White counterparts. Asian groups had less HIV diagnosis rates than their White counterparts. 
 
 ```{r}
 # Join the 3 dataset by keys
@@ -307,17 +305,6 @@ hiv_california <- left_join(merged_data, sdoh_ca, by = c("year", "geoid", "state
 
 ```
  
- 
- 
-## Visualization 1: [Title Here]
-
-
-
-
-```{r}
-# your code here
-```
-
 
 
 ## Visualization 2: [Title Here]
