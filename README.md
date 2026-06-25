@@ -1,6 +1,18 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/jEmP5upM)
 # Final Project: [Identifying California counties for targeted HIV prevention services: A County-level Analysis of HIV Burden, PrEP Coverage, and Socioeconomic Vulnerability ]
 
+<<<<<<< HEAD
+Identifying California counties for targeted HIV prevention services: A County-level Analysis of HIV burden, PrEP Coverage, and socioeconomic vulnerability"
+author: "Bao Duong and Jean Jacques Brou"
+date: "2026-06-25"
+
+## 🔍 Project Overview
+
+The goal of this project is to collaboratively analyze and visualize the 2024 AIDSVu county-level dataset, with a focus on counties
+California HIV diagnoses rates and prEP utilization. Specifically, we will examine whether counties with higher HIV diagnosis rates also demonstrate
+higher levels of PrEP use and other sociodemographic factors, which may indicate targeted prevention efforts or greater access to HIV prevention services.
+Finally, the project will explore racial and ethnic disparities in HIV diagnosis rates across California counties. 
+=======
 Authors: [Jean Jacques Brou, Bao Duong]  
 Course: PUBH 6199 – Visualizing Data with R  
 Date: [2026-06-25]
@@ -23,8 +35,20 @@ are associated with higher HIV diagnosis rates in California?
 3. Do racial and ethnic disparities in HIV diagnosis rates exist across California counties?]
 
 
+>>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
 
 ## 📊 Final Write-up
+
+# # Used Shinyassistant for dashboard skeleton using prompt "Create an shinyapp skeleton where I want to have three different tabs where each tab is the below sketches. I am interested in
+
+# Sketch 1: Do a radar chart with normalized socioeconomic variables (poverty, high school education percent, uninsured percent, and unemployment percent and HIV diagnosis. One group is high hiv reates and the other group is low hiv rates overlayed. There is a county dropdown
+# For the radar tab, add boxes at the top that show the percent of pvoerty, high school education, uninsured, and unemploymenet
+
+# Sketch 2: Geographic variation in HIV diagnosis rates by county using mainly choropleth maps with shape file. Shading will be done by diagnosis rate and then add size of dot to show PrEP use
+
+# Sketch 3: Grouped bar chart showing average HIV diagnosis rates among different racial groups where there is a county dropdown
+
+# I'll create a Shiny for R app skeleton with three tabs for your HIV data visualization. I'll structure it with placeholder data and logic that you can replace with your actual data.
 
 The final write-up, including code and interpretation of the visualizations, is available here:
 
@@ -55,11 +79,15 @@ compared to Imperial county with highest PrEp users rate and a lower new HIV dia
 
 
 
-Bar Chart: The bar chart explore racial and ethnic disparities in HIV infection across California counties.
-We visualize the mean rate of new hiv diagnoses by race/ethnicity in California. 
-The bar chart shows a higher mean rate for black and Hispanic compared to white and other minorities. 
+Bar chart: New HIV Diagnosis Average rate by race/ethnicity (California 2023)
+
+The bar chart shows California state average of new hiv diagnoses by race/ethnicity per 100, 000.
+The bar chart shows a higher average rate for black and Hispanic compared to white and other minorities.
 
 
+Counties bar chart also shows the different HIV diagnosis rates by race for each county. For most counties, Black groups experience much higher HIV diagnosis rates where it was about 3-4 times more than their White counterparts. Hispanic groups had twice as high diagnosis rates as their White Counterparts. For some counties, Multiple Races, and NH Pacific Islander  also were at least twice as high as their White counterparts. Asian groups had less HIV diagnosis rates than their White counterparts.
+
+Click the the shiny dashboard to view counties specific average. 
 
 
 Shiny Dashboard: 
@@ -67,10 +95,13 @@ Shiny Dashboard:
 
 ## Limitations
 
-The data visualizations was limited to 2023 due to unavailability of 2024 and 2025 dataset of interest on AIDSVu. 
--Missing data
--missing variable of interest
--
+We had to use 2023 as that was the most recent year available for AIDSVu for their HIV diagnosis, PrEP, and socioeconomic factors.
+A good amount of the data was suppressed due to cases being too low to share in a dataset or the state department requested to not share to AIDSVu. 
+The dataset also shared rates for HIV diagnosis and PrEP, but the rates had a related rate stability variable that directed us to view the rate with 
+caution due to cases being too low (for example, American Indian for many counties) and so we mutated the dataset to remove those low confidence values 
+from the visualizations. We also did not have PrEP rate by race and so we were unable to make a stronger analysis to consider potential interplay of 
+race to PrEP to HIV diagonosis.  Finally, our chloropleth map analyzed by counties, but perhaps there was a better way to analyze rates and relationships 
+more meaningfully  by population hubs in California.   
 
 👉 [**View the write-up website**](https://pubh6199-data-viz-with-r.github.io/hw6-YOUR-TEAM-NAME/)
 
