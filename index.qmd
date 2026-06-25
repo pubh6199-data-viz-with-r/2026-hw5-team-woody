@@ -331,9 +331,6 @@ _Describe what this plot shows, and why it's important._
 ```
 
 
-pal <- colorNumeric("RdYlBu", domain = midwest_sf$percbelowpoverty) #using the sf object with midwest_sf
-
-addLegend(pal = pal, values = ~ percbelowpoverty, title = "Percent Below Poverty") |>  #added legend
 
 ```{r}
 
