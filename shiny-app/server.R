@@ -4,9 +4,9 @@ server <- function(input, output, session) {
   
   # (Tab 1) Create county summary stats for value boxes 
   county_stats <- reactive({
-    req(input$county_radar)
+    req(input$county_radar) # Stops execution if no county has been selected yet
     
-    hiv_california_sf %>%
+    hiv_california %>%
       filter(county_name == input$county_radar) %>%
       summarise(
         poverty      = mean(percent_living_in_poverty,               na.rm = TRUE),
@@ -79,8 +79,8 @@ server <- function(input, output, session) {
     n            <- length(group_labels)
     col_vec      <- c("#E74C3C", "#3498DB", "#27AE60")
     fill_vec     <- c(
-      scales::alpha("#E74C3C", 0.25),
-      scales::alpha("#3498DB", 0.25),
+      scales::alpha("#3498d8", 0.10), # make this more transparent 
+      scales::alpha("#e74c3c", 0.10),
       scales::alpha("#27AE60", 0.30)
     )
     lty_vec <- c(1, 1, 2)[seq_len(n)]
@@ -187,7 +187,7 @@ server <- function(input, output, session) {
     validate(
       need(nrow(plot_df) > 0,
            paste0("All race/ethnicity rates are suppressed for ",
-                  input$county_bar, " County (too few of cases per group)."))
+                  input$county_bar, " County (too few of cases per group where numerator is less than 12)."))
     )
     
     ggplot(plot_df, aes(x = race, y = hiv_rate, fill = race)) +
@@ -209,7 +209,7 @@ server <- function(input, output, session) {
       labs(
         title    = paste("HIV Diagnosis Rates by Race/Ethnicity —",
                          input$county_bar, "County"),
-        subtitle = "Diagnoses per 100,000 population (2023). Suppressed groups omitted.",
+        subtitle = "Diagnoses per 100,000 population (2023). Counties with suppressed racial groups are omitted.",
         x        = NULL,
         y        = "Rate per 100,000"
       ) +

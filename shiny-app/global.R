@@ -101,7 +101,7 @@ merged_data <- left_join(newdx_ca, prep_ca, by = c("year", "geoid", "state", "st
 
 hiv_california <- left_join(merged_data, sdoh_ca, by = c("year", "geoid", "state", "state_abbreviation", "county_name"))
 
-# download California shape files
+# For visualization 1 download California shape files
 # use "clean_names" to transform variables name in uppercase letter to lowercase
 # rename some variable to match common in the HIV_California variable
 
@@ -123,6 +123,7 @@ hiv_california <- hiv_california %>%
     geoid = as.character(geoid),
     geoid = str_pad(geoid, width = 5, pad = "0")
   )
+
 #Join the HIV_California data to california shape files
 
 hiv_california_sf <- counties_ca  %>%
@@ -131,7 +132,7 @@ hiv_california_sf <- counties_ca  %>%
 
 
 # rename some variable to match common in the HIV_California variable
-# visualization 1 Bin new_diagnoses_cases into High / Low 
+# visualization 2 Bin new_diagnoses_cases into High / Low 
 
 hiv_california <- hiv_california %>%
   mutate(
@@ -147,14 +148,17 @@ hiv_california <- hiv_california %>%
     .after = new_diagnoses_cases
   )
 
+hiv_california <- hiv_california %>%
+  mutate(
+    county_name = str_remove(county_name, " County$"),  # e.g. "Los Angeles"
+    geoid        = str_pad(as.character(geoid), width = 5, pad = "0")
+  )
+
+counties_ca <- counties(state = "CA", cb = TRUE, year = 2023) %>%
+  clean_names() 
 
 
-# Pre-normalised dataset for radar (rescale numeric cols across all counties)
-hiv_norm <- hiv_california %>%
-  mutate(across(where(is.numeric), rescale))
-
-
-# for visualization 2 California shape files
+# for visualization 1 California shape files
 # use "clean_names" to transform variables name in uppercase letter to lowercase
 # download California shape files
 # use "clean_names" to transform variables name in uppercase letter to lowercase
@@ -174,11 +178,20 @@ counties_ca <- counties(state = "CA", cb = TRUE, year = 2023) %>%
     geoid = str_pad(geoid, width = 5, pad = "0")
   )
 
+hiv_california_sf <- counties_ca %>%
+  left_join(hiv_california,
+            by = c("geoid", "state", "state_abbreviation", "county_name"))
+
+# County choices for dropdowns 
+county_choices <- sort(unique(hiv_california$county_name))
+
+# Race rate columns 
 hiv_california <- hiv_california %>%
   mutate(
     geoid = as.character(geoid),
     geoid = str_pad(geoid, width = 5, pad = "0")
   )
+
 #Join the HIV_California data to california shape files
 
 hiv_california_sf <- counties_ca  %>%
@@ -211,25 +224,14 @@ race_long <- hiv_california %>%
   mutate(race = names(race_cols)[match(race_col, unname(race_cols))]) %>%
   select(county_name, race, hiv_rate)
 
-# Statewide average HIV diagnosis rate by race/ethnicity
+# Pre-normalised dataset for radar (rescale numeric cols across all counties)
+hiv_norm <- hiv_california %>%
+  mutate(across(where(is.numeric), rescale))
 
-state_race <- hiv_california %>%
-  summarise(
-    Black              = mean(new_diagnoses_black_rate, na.rm = TRUE),
-    White              = mean(new_diagnoses_white_rate, na.rm = TRUE),
-    Hispanic           = mean(new_diagnoses_hispanic_rate, na.rm = TRUE),
-    Asian              = mean(new_diagnoses_asian_rate, na.rm = TRUE),
-    `Amer. Indian / AN` =
-      mean(new_diagnoses_american_indian_alaska_native_rate, na.rm = TRUE),
-    `Multiple Races`   =
-      mean(new_diagnoses_multiple_races_rate, na.rm = TRUE),
-    `NH / Pacific Isl.` =
-      mean(new_diagnoses_native_hawaiian_other_pacific_islander_rate,
-           na.rm = TRUE)
-  ) %>%
-  pivot_longer(
-    everything(),
-    names_to = "race",
-    values_to = "state_rate"
-  )
 
+# for the race ethnicity tab, there are counties that have no data to display. And so create a new vector with just counties that have some data
+race_county_choices <- race_long %>%
+  filter(!is.na(hiv_rate)) %>%
+  pull(county_name) %>%
+  unique() %>%
+  sort()
