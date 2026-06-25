@@ -1,0 +1,12 @@
+name: hiv-diagnosis
+title: hiv-diagnosis
+username: jean-brou
+account: jean-brou
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 17552063
+bundleId: 12178873
+url: https://jean-brou.shinyapps.io/hiv-diagnosis/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
