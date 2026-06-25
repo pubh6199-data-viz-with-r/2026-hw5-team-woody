@@ -391,8 +391,8 @@ leaflet(hiv_california_sf) %>%
     opacity = 0.9,
     shape = "circle",
     title = "county_prep_rate",
-     # Forces exactly 5 dot sizes, matching your reference image
-    orientation = "vertical", # Stacks them vertically
+   
+    orientation = "vertical", 
     position = "bottomleft"
   ) %>%
 setView(lng = -119, 
