@@ -52,10 +52,9 @@ knitr::opts_chunk$set(
 Topic : Identifying California counties for targeted HIV prevention services: A County-level Analysis of HIV Burden, PrEP Coverage, and Socioeconomic Vulnerability 
 
 Data-driven approaches can help inform targeted HIV interventions in communities with a high burden of HIV infections and low PrEP utilization. Therefore, this project seeks to identify potential priority counties in California for targeted HIV prevention services using the 2023 AIDSVu datasets. We will explore county-level patterns of HIV burden, PrEP utilization, and socioeconomic vulnerability by answering the following research questions:   
-1. Which county-level socioeconomic factors (e.g., percent living in poverty,  education attainment,  uninsured rate under 65 years old, and unemployment) are associated with higher HIV diagnosis rates in California?   
+1. Which county-level socioeconomic factors (e.g., percent living in poverty,  education attainment,  uninsured rate, and unemployment) are associated with higher HIV diagnosis rates in California?   
 2. How do  HIV diagnosis rates vary across California counties? Do counties with higher HIV diagnosis rates also have higher PrEP utilization? 
 3. Do racial  disparities in HIV diagnosis rates exist across California counties?
-
 
 ## Data
 
