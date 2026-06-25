@@ -332,6 +332,12 @@ compared to Imperial county with highest PrEp users rate and a lower new HIV dia
 
 
 ```{r}
+# your code here
+```
+
+
+
+```{r}
 
 # use st_transform to convert my data into crs
 hiv_california_sf = sf::st_transform(hiv_california_sf, 4326)
@@ -390,8 +396,8 @@ leaflet(hiv_california_sf) %>%
     opacity = 0.9,
     shape = "circle",
     title = "county_prep_rate",
-     # Forces exactly 5 dot sizes, matching your reference image
-    orientation = "vertical", # Stacks them vertically
+   
+    orientation = "vertical", 
     position = "bottomleft"
   ) %>%
 setView(lng = -119, 
