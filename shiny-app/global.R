@@ -19,6 +19,7 @@ library(plotly)
 library(tidyverse)
 library(here)
 library(tmap)
+library(rsconnect)
 
 #set wd as the 2026-hw5-team-woody folder 
 getwd() 
@@ -209,4 +210,26 @@ race_long <- hiv_california %>%
   ) %>%
   mutate(race = names(race_cols)[match(race_col, unname(race_cols))]) %>%
   select(county_name, race, hiv_rate)
+
+# Statewide average HIV diagnosis rate by race/ethnicity
+
+state_race <- hiv_california %>%
+  summarise(
+    Black              = mean(new_diagnoses_black_rate, na.rm = TRUE),
+    White              = mean(new_diagnoses_white_rate, na.rm = TRUE),
+    Hispanic           = mean(new_diagnoses_hispanic_rate, na.rm = TRUE),
+    Asian              = mean(new_diagnoses_asian_rate, na.rm = TRUE),
+    `Amer. Indian / AN` =
+      mean(new_diagnoses_american_indian_alaska_native_rate, na.rm = TRUE),
+    `Multiple Races`   =
+      mean(new_diagnoses_multiple_races_rate, na.rm = TRUE),
+    `NH / Pacific Isl.` =
+      mean(new_diagnoses_native_hawaiian_other_pacific_islander_rate,
+           na.rm = TRUE)
+  ) %>%
+  pivot_longer(
+    everything(),
+    names_to = "race",
+    values_to = "state_rate"
+  )
 
