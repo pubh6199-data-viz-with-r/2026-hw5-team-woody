@@ -1,19 +1,8 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/jEmP5upM)
 # Final Project: [Identifying California counties for targeted HIV prevention services: A County-level Analysis of HIV Burden, PrEP Coverage, and Socioeconomic Vulnerability ]
 
-<<<<<<< HEAD
-Identifying California counties for targeted HIV prevention services: A County-level Analysis of HIV burden, PrEP Coverage, and socioeconomic vulnerability"
-author: "Bao Duong and Jean Jacques Brou"
-date: "2026-06-25"
-
-## 🔍 Project Overview
-
-The goal of this project is to collaboratively analyze and visualize the 2024 AIDSVu county-level dataset, with a focus on counties
-California HIV diagnoses rates and prEP utilization. Specifically, we will examine whether counties with higher HIV diagnosis rates also demonstrate
-higher levels of PrEP use and other sociodemographic factors, which may indicate targeted prevention efforts or greater access to HIV prevention services.
-Finally, the project will explore racial and ethnic disparities in HIV diagnosis rates across California counties. 
-=======
 Authors: [Jean Jacques Brou, Bao Duong]  
+Identifying California counties for targeted HIV prevention services: A County-level Analysis of HIV burden, PrEP Coverage, and socioeconomic vulnerability"
 Course: PUBH 6199 – Visualizing Data with R  
 Date: [2026-06-25]
 
@@ -35,7 +24,6 @@ are associated with higher HIV diagnosis rates in California?
 3. Do racial and ethnic disparities in HIV diagnosis rates exist across California counties?]
 
 
->>>>>>> 7497273603830082dee52c872cd130a8d3205f3a
 
 ## 📊 Final Write-up
 
@@ -77,13 +65,14 @@ rate compared to smaller counties with lower new hiv diagnosis rate.
 The interactive map shows that Kern county has highest new HIV diagnoses rate (29) 
 compared to Imperial county with highest PrEp users rate and a lower new HIV diagnoses rate (18). 
 
-The interactive map also revealed missing data for many other bigger counties across California. 
 
 
 Bar Chart: The bar chart explore racial and ethnic disparities in HIV infection across California counties.
 We visualize the average rate of new hiv diagnoses by race/ethnicity in California. 
 The bar chart shows a higher average rate for black and Hispanic compared to white and other minorities. 
 
+The bar chart shows California state average of new hiv diagnoses by race/ethnicity per 100, 000.
+The bar chart shows a higher average rate for black and Hispanic compared to white and other minorities.
 
 
 Shiny Dashboard: 
@@ -91,7 +80,13 @@ Shiny Dashboard:
 
 ## Limitations
 
-
+We had to use 2023 as that was the most recent year available for AIDSVu for their HIV diagnosis, PrEP, and socioeconomic factors.
+A good amount of the data was suppressed due to cases being too low to share in a dataset or the state department requested to not share to AIDSVu. 
+The dataset also shared rates for HIV diagnosis and PrEP, but the rates had a related rate stability variable that directed us to view the rate with 
+caution due to cases being too low (for example, American Indian for many counties) and so we mutated the dataset to remove those low confidence values 
+from the visualizations. We also did not have PrEP rate by race and so we were unable to make a stronger analysis to consider potential interplay of 
+race to PrEP to HIV diagonosis.  Finally, our chloropleth map analyzed by counties, but perhaps there was a better way to analyze rates and relationships 
+more meaningfully  by population hubs in California.   
 
 👉 [**View the write-up website**](https://pubh6199-data-viz-with-r.github.io/hw6-YOUR-TEAM-NAME/)
 
