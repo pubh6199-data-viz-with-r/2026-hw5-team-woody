@@ -296,7 +296,7 @@ hiv_california_sf <- counties_ca  %>%
 
 ## Visualization 3: Bar Chart of HIV diagnosis Rates among Different racial groups 
 
-This bar chart shows the different HIV diagnosis rates by race for each county. For most counties, Black groups experience much higher HIV diagnois rates where it was about 3-4 times more than their White counterparts. Hispanic groups had twice as high diagnosis rates as their White Counterparts. For some counties, Multiple Races, and NH Pacific Islander 
+This bar chart shows the different HIV diagnosis rates by race for each county. For most counties, Black groups experience much higher HIV diagnosis rates where it was about 3-4 times more than their White counterparts. Hispanic groups had twice as high diagnosis rates as their White Counterparts. For some counties, Multiple Races, and NH Pacific Islander 
 also were at least twice as high as their White counterparts. Asian groups had less HIV diagnosis rates than their White counterparts. 
 
 ```{r}
