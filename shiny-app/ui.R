@@ -61,7 +61,8 @@ ui <- page_navbar(
         ),
         hr(),
         p("This radar chart compares normalized socioeconomic variables between
-           high and low HIV diagnosis rate groups for the selected county.",
+           high and low HIV diagnosis rate groups for the selected county. A value of 0 = county with the lowest observed value in California
+1 = county with the highest observed value in California.",
           style = "font-size:0.82rem; color:#666;")
       ),
       
@@ -103,24 +104,6 @@ ui <- page_navbar(
           "Variables normalized 0–1 across all California counties.
            Red = High HIV Rate group; Blue = Low HIV Rate group.Source: AIDSVU 2023 New Diagnosis Dataset"
         )
-      )
-    )
-  ),
-  
-  # ── Tab 2: Choropleth Map ─────────────────────────────────────────────────
-  nav_panel(
-    "Geographic Variation",
-    card(
-      card_header("Choropleth Map: HIV Diagnosis Rates and PrEP Use by County"),
-      full_screen = TRUE,
-      plotlyOutput("choropleth_map", height = "600px")
-    ),
-    card(
-      card_body(
-        p("Map shading reflects county-level HIV diagnosis rates per 100,000 population by county.
-           Dot size reflects county-level PrEP utilisation. Only data with a high stability rating is shown."),
-        p(em("Note: Replace scatter plot with sf + leaflet shapefile rendering
-              for accurate county boundary representation."))
       )
     )
   ),
