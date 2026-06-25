@@ -59,6 +59,7 @@ ui <- page_navbar(
           choices  = sort(unique(hiv_california$county_name)),
           selected = sort(unique(hiv_california$county_name))[1]
         ),
+        
         hr(),
         p("This radar chart compares normalized socioeconomic variables between
            high and low HIV diagnosis rate groups for the selected county. A value of 0 = county with the lowest observed value in California
@@ -124,12 +125,26 @@ ui <- page_navbar(
            racial and ethnic groups for the selected county.",
           style = "font-size:0.82rem; color:#666;")
       ),
-      card(
-        card_header("Average HIV Diagnosis Rates by Race/Ethnicity"),
-        plotOutput("bar_chart", height = "500px"),
-        card_footer(
-          style = "font-size:0.78rem; color:#888;",
-          "Rates shown per 100,000 population. Source: AIDSVU 2023 New Diagnosis Dataset."
+      
+      layout_columns(
+        col_widths = c(6, 6),
+        
+        card(
+          card_header("Selected County"),
+          plotOutput("bar_chart", height = "500px"),
+          card_footer(
+            style = "font-size:0.78rem; color:#888;",
+            "County-level diagnosis rates per 100,000 population."
+          )
+        ),
+        
+        card(
+          card_header("California State Average"),
+          plotOutput("state_bar_chart", height = "500px"),
+          card_footer(
+            style = "font-size:0.78rem; color:#888;",
+            "Statewide average diagnosis rates per 100,000 population."
+          )
         )
       )
     )

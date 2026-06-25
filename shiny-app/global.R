@@ -19,6 +19,7 @@ library(plotly)
 library(tidyverse)
 library(here)
 library(tmap)
+library(rsconnect)
 
 #set wd as the 2026-hw5-team-woody folder 
 getwd() 

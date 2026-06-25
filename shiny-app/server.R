@@ -116,6 +116,59 @@ server <- function(input, output, session) {
   
   # Tab 2: Chloropleth Map hold
   
+  output$choropleth_map <- renderLeaflet({
+    
+    leaflet(hiv_california_sf) %>%
+      addProviderTiles(providers$CartoDB.Positron) %>%
+      
+      # HIV choropleth layer
+      addPolygons(
+        fillColor = ~hiv_pal(new_diagnoses_rate),
+        color = "white",
+        weight = 1,
+        fillOpacity = 0.9,
+        
+        label = ~lapply(
+          paste0(
+            "<strong>", county_name, "</strong><br>",
+            "New Diagnosis Rate: ",
+            round(new_diagnoses_rate, 1), "<br>",
+            "New HIV Cases: ",
+            new_diagnoses_cases, "<br>",
+            "County PrEP Rate: ",
+            round(county_prep_rate, 1), "<br>",
+            "County PrEP Users: ",
+            county_prep_users
+          ),
+          htmltools::HTML
+        )
+      ) %>%
+      
+      # PrEP dots
+      addCircleMarkers(
+        data = prep_points,
+        radius = ~sqrt(county_prep_rate) / 2,
+        fillColor = "black",
+        fillOpacity = 0.8,
+        stroke = FALSE
+      ) %>%
+      
+      # HIV legend
+      addLegend(
+        pal = hiv_pal,
+        values = ~new_diagnoses_rate,
+        title = "New HIV Diagnosis Rate",
+        position = "bottomright"
+      ) %>%
+      
+      # Zoom to California
+      setView(
+        lng = -119,
+        lat = 37,
+        zoom = 5.5
+      )
+    
+  })
   
   
   # Tab 3: Race/Ethnicity Bar Chart 
@@ -169,5 +222,35 @@ server <- function(input, output, session) {
         plot.background    = element_rect(fill = "#FAFAFA", colour = NA)
       )
   })
-  
+ 
+ output$state_bar_chart <- renderPlot({
+    plot_state <- state_race %>%
+      mutate(race = factor(race, levels = c(
+        "Black", "Hispanic", "White", "Asian",
+        "Amer. Indian / AN", "Multiple Races", "NH / Pacific Isl."
+      )))
+
+    ggplot(plot_state, aes(x = race, y = state_rate, fill = race)) +
+      geom_col(width = 0.68, show.legend = FALSE) +
+      geom_text(aes(label = round(state_rate, 1)),
+                vjust = -0.45, size = 4) +
+      scale_fill_manual(values = c(
+        "Black" = "#C0392B",
+        "Hispanic" = "#E67E22",
+        "White" = "#2980B9",
+        "Asian" = "#8E44AD",
+        "Amer. Indian / AN" = "#16A085",
+        "Multiple Races" = "#7F8C8D",
+        "NH / Pacific Isl." = "#D4AC0D"
+      )) +
+      scale_y_continuous(expand = expansion(mult = c(0, 0.14))) +
+      labs(
+        title = "California State Average HIV Diagnosis Rates by Race/Ethnicity",
+        x = NULL,
+        y = "Rate per 100,000"
+      ) +
+      theme_minimal(base_size = 13)
+  })
+ 
 }
+ 
