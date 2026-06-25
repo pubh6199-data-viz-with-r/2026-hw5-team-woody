@@ -53,7 +53,6 @@ rate compared to smaller counties with lower new hiv diagnosis rate.
 The interactive map shows that Kern county has highest new HIV diagnoses rate (29) 
 compared to Imperial county with highest PrEp users rate and a lower new HIV diagnoses rate (18). 
 
-The interactive map also revealed missing data for many other bigger counties across California. 
 
 
 Bar Chart: The bar chart explore racial and ethnic disparities in HIV infection across California counties.
@@ -61,7 +60,6 @@ We visualize the mean rate of new hiv diagnoses by race/ethnicity in California.
 The bar chart shows a higher mean rate for black and Hispanic compared to white and other minorities. 
 
 
-What to show HIV new diagnoses rate across counties
 
 
 Shiny Dashboard: 

@@ -245,13 +245,13 @@ _Describe what this plot shows, and why it's important._
 
 ## Visualization 2: [Title Here]
 
-_Describe what this plot shows, and why it's important._
-
-
-```{r}
-# your code here
-```
-
+The interactive map examine geographic variation in HIV diagnosis rates by county. 
+We visualize HIV new diagnoses rate per 100,000 and represented 
+county PrEP use rate per 100,000 with dots. Higher new hiv diagnoses rate are concentrated in larger counties in 
+the south and middle of California. Counties with higher new hiv diagnoses rate have lower PrEP use
+rate compared to smaller counties with lower new hiv diagnosis rate. 
+The interactive map shows that Kern county has highest new HIV diagnoses rate (29) 
+compared to Imperial county with highest PrEp users rate and a lower new HIV diagnoses rate (18). 
 
 
 ```{r}
@@ -325,9 +325,11 @@ setView(lng = -119,
 
 
 
-## Visualization 3: [Title Here]
+## Visualization 3: [
+New HIV Diagnosis Average rate by race/ethnicity (California 2023)]
 
-_Describe what this plot shows, and why it's important._
+The bar chart shows California state average of new hiv diagnoses by race/ethnicity per 100, 000.
+The bar chart shows a higher average rate for black and Hispanic compared to white and other minorities. 
 
 
 ```{r}
@@ -377,7 +379,6 @@ ggplot(hiv_race_long, aes(x = race, y = state_rate, fill = race)) +
     axis.text.x = element_text(angle = 30, hjust = 1)
   )
 ```
-
 
 
 ## OR Shiny app: [HIV Diagnosis Analysis Dashboard — California]
