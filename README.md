@@ -54,24 +54,29 @@ and merged it to the clean data.
 
 ## Interpretation
 
-Interactive map: 
+Interactive Cloropleth map: 
 
-The interactive map examines geographic variation in HIV diagnosis rates by county. 
+The interactive map examine geographic variation in new HIV diagnosis rates and PrEP use by county. 
 We visualize HIV new diagnoses rate per 100,000 and represented 
-county PrEP use rate per 100,000 with dots. Higher new hiv diagnoses rate are concentrated in larger counties in 
+county PrEP use rate per 100,000 with dots to show high or low PrEP use. 
+Higher new hiv diagnoses rate are concentrated in larger counties in 
 the south and middle of California. Counties with higher new hiv diagnoses rate have lower PrEP use
 rate compared to smaller counties with lower new hiv diagnosis rate. 
 The interactive map shows that Kern county has highest new HIV diagnoses rate (29) 
 compared to Imperial county with highest PrEp users rate and a lower new HIV diagnoses rate (18). 
 
 
-
-Bar Chart: The bar chart explore racial and ethnic disparities in HIV infection across California counties.
-We visualize the average rate of new hiv diagnoses by race/ethnicity in California. 
+This grouped bar chart shows the average of new HIV diagnosis rates per 100,000 among different racial groups in the State of California.
 The bar chart shows a higher average rate for black and Hispanic compared to white and other minorities. 
 
-The bar chart shows California state average of new hiv diagnoses by race/ethnicity per 100, 000.
-The bar chart shows a higher average rate for black and Hispanic compared to white and other minorities.
+Counties bar chart also shows the different HIV diagnosis rates by race for each county. 
+For most counties, Black groups experience much higher HIV diagnosis rates where it was 
+about 3-4 times more than their White counterparts. Hispanic groups had twice as high diagnosis
+rates as their White Counterparts. For some counties, Multiple Races, and NH Pacific Islander  
+also were at least twice as high as their White counterparts. Asian groups had less HIV diagnosis 
+rates than their White counterparts.
+
+[Click the shiny dashboard to view counties specific average] (https://bao-duong17.shinyapps.io/shiny-app/) 
  
 
 ## Limitations
