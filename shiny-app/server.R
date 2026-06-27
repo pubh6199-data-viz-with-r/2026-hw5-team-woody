@@ -86,7 +86,7 @@ server <- function(input, output, session) {
     lty_vec <- c(1, 1, 2)[seq_len(n)]
     
     # Maximize canvas area to prevent text running off
-
+    
     par(mar = c(1, 1, 3, 1))
     radarchart(
       radar_df,
@@ -170,18 +170,16 @@ server <- function(input, output, session) {
     
   })
   
-  
   # Tab 3: Race/Ethnicity Bar Chart 
   output$bar_chart <- renderPlot({
     req(input$county_bar) # Stops execution if no county has been selected yet 
     
-  # Keeps only rows matching the user-selected county and where hiv_rate is not NA (removes suppressed/missing groups)
-
+    # Keeps only rows matching the user-selected county and where hiv_rate is not NA (removes suppressed/missing groups)
+    
     plot_df <- race_long %>%
       filter(county_name == input$county_bar, !is.na(hiv_rate)) %>%
       mutate(race = factor(race, levels = c(
-        "Black", "Hispanic", "White", "Asian",
-        "Amer. Indian / AN", "Multiple Races", "NH / Pacific Isl."
+        "Black", "Hispanic", "White", "Asian", "Multiple Races", "NH / Pacific Isl.", "Amer. Indian / AN"
       )))
     
     validate(
@@ -205,11 +203,12 @@ server <- function(input, output, session) {
         "Multiple Races"     = "#7F8C8D",
         "NH / Pacific Isl."  = "#D4AC0D"
       )) +
+      scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) +  #wrap labels
       scale_y_continuous(expand = expansion(mult = c(0, 0.14))) +
       labs(
         title    = paste("HIV Diagnosis Rates by Race/Ethnicity —",
                          input$county_bar, "County"),
-        subtitle = "Diagnoses per 100,000 population (2023). Counties with suppressed racial groups are omitted.",
+        subtitle = "Diagnoses per 100,000 population (2023).",
         x        = NULL,
         y        = "Rate per 100,000"
       ) +
@@ -222,35 +221,45 @@ server <- function(input, output, session) {
         plot.background    = element_rect(fill = "#FAFAFA", colour = NA)
       )
   })
- 
- output$state_bar_chart <- renderPlot({
+  
+  output$state_bar_chart <- renderPlot({
     plot_state <- state_race %>%
       mutate(race = factor(race, levels = c(
         "Black", "Hispanic", "White", "Asian",
-        "Amer. Indian / AN", "Multiple Races", "NH / Pacific Isl."
+        "Multiple Races", "NH / Pacific Isl.", "Amer. Indian / AN"
       )))
-
     ggplot(plot_state, aes(x = race, y = state_rate, fill = race)) +
       geom_col(width = 0.68, show.legend = FALSE) +
-      geom_text(aes(label = round(state_rate, 1)),
-                vjust = -0.45, size = 4) +
+      geom_text(
+        aes(label = round(state_rate, 1)),
+        vjust = -0.45, size = 4, colour = "#333333"
+      ) +
       scale_fill_manual(values = c(
-        "Black" = "#C0392B",
-        "Hispanic" = "#E67E22",
-        "White" = "#2980B9",
-        "Asian" = "#8E44AD",
-        "Amer. Indian / AN" = "#16A085",
-        "Multiple Races" = "#7F8C8D",
-        "NH / Pacific Isl." = "#D4AC0D"
+        "Black"              = "#C0392B",
+        "Hispanic"           = "#E67E22",
+        "White"              = "#2980B9",
+        "Asian"              = "#8E44AD",
+        "Amer. Indian / AN"  = "#16A085",
+        "Multiple Races"     = "#7F8C8D",
+        "NH / Pacific Isl."  = "#D4AC0D"
       )) +
+      scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) +  #wrap labels
       scale_y_continuous(expand = expansion(mult = c(0, 0.14))) +
       labs(
-        title = "California State Average HIV Diagnosis Rates by Race/Ethnicity",
-        x = NULL,
-        y = "Rate per 100,000"
+        title    = "HIV Diagnosis Rates by Race/Ethnicity — California",
+        subtitle = "Statewide average diagnoses per 100,000 population (2023).",
+        x        = NULL,
+        y        = "Rate per 100,000"
       ) +
-      theme_minimal(base_size = 13)
+      theme_minimal(base_size = 13) +
+      theme(
+        plot.title         = element_text(face = "bold", size = 14),
+        plot.subtitle      = element_text(colour = "#666666", size = 11),
+        panel.grid.major.x = element_blank(),
+        axis.text.x        = element_text(face = "bold"),
+        plot.background    = element_rect(fill = "#FAFAFA", colour = NA)
+      )
+    
   })
- 
+  
 }
- 

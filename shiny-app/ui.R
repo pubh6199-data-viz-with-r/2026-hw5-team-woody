@@ -17,7 +17,7 @@ ui <- page_navbar(
         
         p(
           "This map displays county-level HIV diagnosis rates and PrEP utilization
-        across California counties."
+        across California counties. Counties with suppressed or unreliable estimates are omitted from the map."
         ),
         
         hr(),
@@ -41,8 +41,7 @@ ui <- page_navbar(
         leafletOutput("choropleth_map", height = "650px"),
         card_footer(
           style = "font-size:0.78rem; color:#888;",
-          "Rates are reported per 100,000 population. Counties with suppressed
-        or unreliable estimates are omitted from the map."
+          "Rates are reported per 100,000 population."
         )
       )
     )
@@ -122,7 +121,7 @@ ui <- page_navbar(
         ),
         hr(),
         p("This chart shows average HIV diagnosis rates (per 100,000) across
-           racial and ethnic groups for the selected county.",
+           racial and ethnic groups for the selected county. Counties with suppressed racial groups are omitted.",
           style = "font-size:0.82rem; color:#666;")
       ),
       

@@ -45,7 +45,7 @@ All 50 states, the District of Columbia (DC), and U.S. territories collect compa
 name-based case reports of HIV infection and social determinants of health. 
 
 We downloaded the Social Determinants of Health, County New Diagnoses, and County PrEP Data. 
-We restricted our analysis to California, remove unnecessary variables and merged the three data by keys 
+We restricted our analysis to California, removed unnecessary variables and merged the three data by keys 
 such: "year", "geoid", "state", "state_abbreviation", "county_name". We downloaded 2023 California shape files 
 and merged it to the clean data. 
 
@@ -97,7 +97,7 @@ A good amount of the data was suppressed due to cases being too low to share in 
 The dataset also shared rates for HIV diagnosis and PrEP, but the rates had a related rate stability variable that directed us to view the rate with 
 caution due to cases being too low (for example, American Indian for many counties) and so we mutated the dataset to remove those low confidence values 
 from the visualizations. We also did not have PrEP rate by race and so we were unable to make a stronger analysis to consider potential interplay of 
-race to PrEP to HIV diagonosis.  Finally, our chloropleth map analyzed by counties, but perhaps there was a better way to analyze rates and relationships 
+race to PrEP to HIV diagnosis.  Finally, our chloropleth map analyzed by counties, but perhaps there was a better way to analyze rates and relationships 
 more meaningfully  by population hubs in California.   
 
 👉 [**View the write-up website**](https://pubh6199-data-viz-with-r.github.io/hw6-YOUR-TEAM-NAME/)
