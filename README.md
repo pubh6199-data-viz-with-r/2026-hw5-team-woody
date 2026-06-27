@@ -35,8 +35,6 @@ are associated with higher HIV diagnosis rates in California?
 
 # Sketch 3: Grouped bar chart showing average HIV diagnosis rates among different racial groups where there is a county dropdown
 
-# I'll create a Shiny for R app skeleton with three tabs for your HIV data visualization. I'll structure it with placeholder data and logic that you can replace with your actual data.
-
 The final write-up, including code and interpretation of the visualizations, is available here:
 
 ## Data
@@ -54,8 +52,18 @@ and merged it to the clean data.
 
 ## Interpretation
 
-Interactive Cloropleth map: Geographic variation in HIV diagnosis rates and PrEP use by county (California 2023)
+Radar Chart: Socioeonomic Variables and Comparison to High or Low HIV Diagnosis rates 
 
+This plot shows cards that show the average percents for each county for poverty, 
+less than high school education, uninsured rate, and unemployment rate for 2023. 
+Also, it shows a radar chart that normalized these socioeconomic factors from 0 to 1 across all counties. 
+It also compares to a high and low HIV diagnosis group (separated by median).
+There appears to be a relationship between having a less than High School education and higher HIV diagnosis rates
+for California counties. There appears to not be a strong relationship for poverty, unemployment, 
+and uninsured rates for HIV diagnosis.
+
+
+Interactive Cloropleth map: Geographic variation in HIV diagnosis rates and PrEP use by county (California 2023)
 
 The interactive map examine geographic variation in new HIV diagnosis rates and PrEP use by county. 
 We visualize HIV new diagnoses rate per 100,000 and represented 
