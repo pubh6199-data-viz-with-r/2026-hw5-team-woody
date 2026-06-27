@@ -54,7 +54,8 @@ and merged it to the clean data.
 
 ## Interpretation
 
-Interactive Cloropleth map: 
+Interactive Cloropleth map: Geographic variation in HIV diagnosis rates and PrEP use by county (California 2023)
+
 
 The interactive map examine geographic variation in new HIV diagnosis rates and PrEP use by county. 
 We visualize HIV new diagnoses rate per 100,000 and represented 
@@ -65,6 +66,8 @@ rate compared to smaller counties with lower new hiv diagnosis rate.
 The interactive map shows that Kern county has highest new HIV diagnoses rate (29) 
 compared to Imperial county with highest PrEp users rate and a lower new HIV diagnoses rate (18). 
 
+
+Bar chart: New HIV Diagnosis Average rate by race/ethnicity (California 2023)
 
 This grouped bar chart shows the average of new HIV diagnosis rates per 100,000 among different racial groups in the State of California.
 The bar chart shows a higher average rate for black and Hispanic compared to white and other minorities. 
