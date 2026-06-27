@@ -50,10 +50,9 @@ knitr::opts_chunk$set(
 Topic : Identifying California counties for targeted HIV prevention services: A County-level Analysis of HIV Burden, PrEP Coverage, and Socioeconomic Vulnerability 
 
 Data-driven approaches can help inform targeted HIV interventions in communities with a high burden of HIV infections and low PrEP utilization. Therefore, this project seeks to identify potential priority counties in California for targeted HIV prevention services using the 2023 AIDSVu datasets. We will explore county-level patterns of HIV burden, PrEP utilization, and socioeconomic vulnerability by answering the following research questions:   
- Which county-level socioeconomic factors (e.g., percent living in poverty,  education attainment,  uninsured rate, and unemployment) are associated with higher HIV diagnosis rates in California?   
-How do  HIV diagnosis rates vary across California counties? Do counties with higher HIV diagnosis rates also have higher PrEP utilization? 
-Do racial  disparities in HIV diagnosis rates exist across California counties?
-
+1. How do  HIV diagnosis rates vary across California counties? Do counties with higher HIV diagnosis rates also have higher PrEP utilization? 
+2. Which county-level socioeconomic factors (e.g., percent living in poverty,  education attainment,  uninsured rate, and unemployment) are associated with higher HIV diagnosis rates in California?   
+3. Do racial  disparities in HIV diagnosis rates exist across California counties?
 
 ## Data
 Source of the data: We will use AIDSVu Dataset 2024 (By Rollins Emory University) for three different datasets 
@@ -69,28 +68,10 @@ Data source [here](https://aidsvu.org/resources/#/datasets?years=2024&locations=
 
 We use 2023 AIDSVu Data collected by state and local health departments, and de-duplicated and processed by the U.S.  Centers for Disease Control and Prevention (CDC) to meet data quality standards for comparability and reliability.  All 50 states, the District of Columbia (DC), and U.S. territories collect comparable confidential, name-based case reports of HIV infection and social determinants of health. 
 
-We downloaded the Social Determinants of Health, County New Diagnoses, and County PrEP Data for county level data in America and its associated new diagnosis rates for the county and for different racial groups. It also had related SDOH data.  We restricted our analysis to California, remove unnecessary variables and merged the three data by keys 
-such: "year", "geoid", "state", "state_abbreviation", "county_name". We downloaded 2023 California shape files and merged it to the clean data. 
+We downloaded the Social Determinants of Health, County New Diagnoses, and County PrEP Data for county level data in America and its associated new diagnosis rates for the county and for different racial groups. It also had related SDOH data.  We restricted our analysis to California, remove unnecessary variables and merged the three data by keys such: "year", "geoid", "state", "state_abbreviation", "county_name". We downloaded 2023 California shape files and merged it to the clean data. 
 
 There were also rate stability variables given to indicate if the related diagnosis or prEP rates were reliable or not. NAs for diagnosis or prEP rates were added if the rate stability was indicated as not reliable. 
 
-
-```{r}
-# Load the packages and data
-library(here)
-library(janitor)
-library(tidyverse)
-library(tmap)
-library(sf)
-library(tigris)
-library(leaflet)
-library(htmltools)
-library(scales)
-library(dplyr)
-library(tidyr)
-library(ggplot2)
-library(leaflegend)
-```   
 
 ```{r}
 knitr::opts_chunk$set(
@@ -105,32 +86,36 @@ knitr::opts_chunk$set(
 
 ```
 
-## Visualization 1: 
+## Visualization 1: Geographic variation in HIV diagnosis rates and PrEP use by county (California 2023)
 
-The interactive map examine geographic variation in HIV diagnosis rates by county.  We visualize HIV new diagnoses rate per 100,000 and represented 
-county PrEP use rate per 100,000 with dots. Higher new hiv diagnoses rate are concentrated in larger counties in the south and middle of California. Counties with higher new hiv diagnoses rate have lower PrEP userate compared to smaller counties with lower new hiv diagnosis rate. 
-The interactive map shows that Kern county has highest new HIV diagnoses rate (29) compared to Imperial county with highest PrEp users rate and a lower new HIV diagnoses rate (18). 
+The interactive map examine geographic variation in new HIV diagnosis rates and PrEP use by county. 
+We visualize HIV new diagnoses rate per 100,000 and represented 
+county PrEP use rate per 100,000 with dots to show high or low PrEP use. 
+Higher new hiv diagnoses rate are concentrated in larger counties in 
+the south and middle of California. Counties with higher new hiv diagnoses rate have lower PrEP use
+rate compared to smaller counties with lower new hiv diagnosis rate. 
+The interactive map shows that Kern county has highest new HIV diagnoses rate (29) 
+compared to Imperial county with highest PrEp users rate and a lower new HIV diagnoses rate (18). 
 
 
-## Visualization 2: Radar Chart of Socioeconomic Variables and Comparison to High or Low HIV Diagnosis rates 
+## Visualization 2: Radar Chart of Socioeconomic Variables and Comparison to High or Low HIV Diagnosis rates (California 2023)
 
 This plot shows cards that show the average percents for each county for poverty, less than high school education, uninsured rate, and unemployment rate for 2023. Also, it shows a radar chart that normalized these soceocnomic factor from 0 to 1 across all counties. Specific California counties can compare how they do with other counties this way. The visualization also compares to a high and low HIV diagnosis group (seperated by median). There appears to be a relationship between having a less than High School education and higher HIV diagnosis rates for California counties. There appears to not be a strong relationship for poverty, unemployment, and uninsured rates for HIV diagnosis. 
 
-## Visualization 3: [New HIV Diagnosis Average rate by race/ethnicity (California 2023)]
+## Visualization 3: [New HIV Diagnosis Average rate by race/ethnicity (California 2023)
 
-This grouped bar chart shows the average of new HIV diagnosis rates per 100,000 among different racial groups in the State of California.The bar chart shows a higher average rate for black and Hispanic compared to white and other minorities.
+This grouped bar chart shows the average of new HIV diagnosis rates per 100,000 among different racial groups in the State of California.The bar chart shows a higher average rate for black and Hispanic compared to white and other minorities. 
 
 Counties bar chart also shows the different HIV diagnosis rates by race for each county. For most counties, Black groups experience much higher HIV diagnosis rates where it was about 3-4 times more than their White counterparts. Hispanic groups had twice as high diagnosis rates as their White Counterparts. For some counties, Multiple Races, and NH Pacific Islander  also were at least twice as high as their White counterparts. Asian groups had less HIV diagnosis rates than their White counterparts.
 
-
 #Shiny app: [HIV Diagnosis Analysis Dashboard — California] Identifying California counties for targeted HIV prevention services: A County-level Analysis of HIV burden, PrEP Coverage, and socioeconomic vulnerability
+
 
 [Click here to open the interactive Shinyapp](https://bao-duong17.shinyapps.io/shiny-app//)
 
-
 ## Limitations
 
-We had to use 2023 as that was the most recent year available for AIDSVu for their HIV diagnosis, PrEP, and socioeconomic factors. A good amount of the data was suppressed due to cases being too low to share in a dataset or the state department requested to not share to AIDSVu. The dataset also shared rates for HIV diagnosis and PrEP, but the rates had a related rate stability variable that directed us to view the rate with caution due to cases being too low (for example, American Indian for many counties) and so we mutated the dataset to remove those low confidence values from the visualizations. We also did not have PrEP rate by race and so we were unable to make a stronger analysis to consider potential interplay of race to PrEP to HIV diagonosis.  Finally, our chloropleth map analyzed by counties, but perhaps there was a better way to analyze rates and relationships more meaningfully  by population hubs in California.    
+We had to use 2023 as that was the most recent year available for AIDSVu for their HIV diagnosis, PrEP, and socioeconomic factors. A good amount of the data was suppressed due to cases being too low to share in a dataset or the state department requested to not share to AIDSVu. The dataset also shared rates for HIV diagnosis and PrEP, but the rates had a related rate stability variable that directed us to view the rate with caution due to cases being too low (for example, American Indian for many counties) and so we mutated the dataset to remove those low confidence values from the visualizations. We also did not have PrEP rate by race and so we were unable to make a stronger analysis to consider potential interplay of race to PrEP to HIV diagnosis.  Finally, our chloropleth map analyzed by counties, but perhaps there was a better way to analyze rates and relationships more meaningfully  by population hubs in California.    
 
 ## Conclusion
 

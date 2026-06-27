@@ -4074,9 +4074,10 @@ vertical-align: -.125em;
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
   <li><a href="#how-you-will-access-the-data" id="toc-how-you-will-access-the-data" class="nav-link" data-scroll-target="#how-you-will-access-the-data">How you will access the data:</a></li>
-  <li><a href="#visualization-1" id="toc-visualization-1" class="nav-link" data-scroll-target="#visualization-1">Visualization 1:</a></li>
-  <li><a href="#visualization-2-radar-chart-of-socioeconomic-variables-and-comparison-to-high-or-low-hiv-diagnosis-rates" id="toc-visualization-2-radar-chart-of-socioeconomic-variables-and-comparison-to-high-or-low-hiv-diagnosis-rates" class="nav-link" data-scroll-target="#visualization-2-radar-chart-of-socioeconomic-variables-and-comparison-to-high-or-low-hiv-diagnosis-rates">Visualization 2: Radar Chart of Socioeconomic Variables and Comparison to High or Low HIV Diagnosis rates</a></li>
-  <li><a href="#visualization-3-new-hiv-diagnosis-average-rate-by-raceethnicity-california-2023" id="toc-visualization-3-new-hiv-diagnosis-average-rate-by-raceethnicity-california-2023" class="nav-link" data-scroll-target="#visualization-3-new-hiv-diagnosis-average-rate-by-raceethnicity-california-2023">Visualization 3: [New HIV Diagnosis Average rate by race/ethnicity (California 2023)]</a></li>
+  <li><a href="#visualization-1-geographic-variation-in-hiv-diagnosis-rates-and-prep-use-by-county-california-2023" id="toc-visualization-1-geographic-variation-in-hiv-diagnosis-rates-and-prep-use-by-county-california-2023" class="nav-link" data-scroll-target="#visualization-1-geographic-variation-in-hiv-diagnosis-rates-and-prep-use-by-county-california-2023">Visualization 1: Geographic variation in HIV diagnosis rates and PrEP use by county (California 2023)</a></li>
+  <li><a href="#visualization-2-radar-chart-of-socioeconomic-variables-and-comparison-to-high-or-low-hiv-diagnosis-rates-california-2023" id="toc-visualization-2-radar-chart-of-socioeconomic-variables-and-comparison-to-high-or-low-hiv-diagnosis-rates-california-2023" class="nav-link" data-scroll-target="#visualization-2-radar-chart-of-socioeconomic-variables-and-comparison-to-high-or-low-hiv-diagnosis-rates-california-2023">Visualization 2: Radar Chart of Socioeconomic Variables and Comparison to High or Low HIV Diagnosis rates (California 2023)</a></li>
+  <li><a href="#visualization-2-geographic-variation-in-hiv-diagnosis-rates-and-prep-use-by-county-california-2023" id="toc-visualization-2-geographic-variation-in-hiv-diagnosis-rates-and-prep-use-by-county-california-2023" class="nav-link" data-scroll-target="#visualization-2-geographic-variation-in-hiv-diagnosis-rates-and-prep-use-by-county-california-2023">Visualization 2: [Geographic variation in HIV diagnosis rates and PrEP use by county (California 2023)</a></li>
+  <li><a href="#visualization-3-new-hiv-diagnosis-average-rate-by-raceethnicity-california-2023" id="toc-visualization-3-new-hiv-diagnosis-average-rate-by-raceethnicity-california-2023" class="nav-link" data-scroll-target="#visualization-3-new-hiv-diagnosis-average-rate-by-raceethnicity-california-2023">Visualization 3: [New HIV Diagnosis Average rate by race/ethnicity (California 2023)</a></li>
   <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations">Limitations</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
@@ -4145,8 +4146,8 @@ vertical-align: -.125em;
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>Topic : Identifying California counties for targeted HIV prevention services: A County-level Analysis of HIV Burden, PrEP Coverage, and Socioeconomic Vulnerability</p>
 <p>Data-driven approaches can help inform targeted HIV interventions in communities with a high burden of HIV infections and low PrEP utilization. Therefore, this project seeks to identify potential priority counties in California for targeted HIV prevention services using the 2023 AIDSVu datasets. We will explore county-level patterns of HIV burden, PrEP utilization, and socioeconomic vulnerability by answering the following research questions:<br>
-Which county-level socioeconomic factors (e.g., percent living in poverty, education attainment, uninsured rate, and unemployment) are associated with higher HIV diagnosis rates in California?<br>
-How do HIV diagnosis rates vary across California counties? Do counties with higher HIV diagnosis rates also have higher PrEP utilization? Do racial disparities in HIV diagnosis rates exist across California counties?</p>
+1. How do HIV diagnosis rates vary across California counties? Do counties with higher HIV diagnosis rates also have higher PrEP utilization? 2. Which county-level socioeconomic factors (e.g., percent living in poverty, education attainment, uninsured rate, and unemployment) are associated with higher HIV diagnosis rates in California?<br>
+3. Do racial disparities in HIV diagnosis rates exist across California counties?</p>
 </section>
 <section id="data" class="level2">
 <h2 class="anchored" data-anchor-id="data">Data</h2>
@@ -4162,55 +4163,41 @@ How do HIV diagnosis rates vary across California counties? Do counties with hig
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the packages and data</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tmap)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tigris)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(leaflet)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(htmltools)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(leaflegend)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">warning =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">message =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">fig.path =</span> <span class="st">&quot;figs/&quot;</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">fig.width =</span> <span class="fl">7.252</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">fig.height =</span> <span class="dv">4</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">comment =</span> <span class="st">&quot;#&gt;&quot;</span>,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">fig.retina =</span> <span class="dv">3</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">warning =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">message =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">fig.path =</span> <span class="st">&quot;figs/&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">fig.width =</span> <span class="fl">7.252</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">fig.height =</span> <span class="dv">4</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">comment =</span> <span class="st">&quot;#&gt;&quot;</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">fig.retina =</span> <span class="dv">3</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
-<section id="visualization-1" class="level2">
-<h2 class="anchored" data-anchor-id="visualization-1">Visualization 1:</h2>
-<p>The interactive map examine geographic variation in HIV diagnosis rates by county. We visualize HIV new diagnoses rate per 100,000 and represented county PrEP use rate per 100,000 with dots. Higher new hiv diagnoses rate are concentrated in larger counties in the south and middle of California. Counties with higher new hiv diagnoses rate have lower PrEP userate compared to smaller counties with lower new hiv diagnosis rate. The interactive map shows that Kern county has highest new HIV diagnoses rate (29) compared to Imperial county with highest PrEp users rate and a lower new HIV diagnoses rate (18).</p>
+<section id="visualization-1-geographic-variation-in-hiv-diagnosis-rates-and-prep-use-by-county-california-2023" class="level2">
+<h2 class="anchored" data-anchor-id="visualization-1-geographic-variation-in-hiv-diagnosis-rates-and-prep-use-by-county-california-2023">Visualization 1: Geographic variation in HIV diagnosis rates and PrEP use by county (California 2023)</h2>
+<p>The interactive map examine geographic variation in new HIV diagnosis rates and PrEP use by county. We visualize HIV new diagnoses rate per 100,000 and represented county PrEP use rate per 100,000 with dots to show high or low PrEP use. Higher new hiv diagnoses rate are concentrated in larger counties in the south and middle of California. Counties with higher new hiv diagnoses rate have lower PrEP use rate compared to smaller counties with lower new hiv diagnosis rate. The interactive map shows that Kern county has highest new HIV diagnoses rate (29) compared to Imperial county with highest PrEp users rate and a lower new HIV diagnoses rate (18).</p>
 </section>
-<section id="visualization-2-radar-chart-of-socioeconomic-variables-and-comparison-to-high-or-low-hiv-diagnosis-rates" class="level2">
-<h2 class="anchored" data-anchor-id="visualization-2-radar-chart-of-socioeconomic-variables-and-comparison-to-high-or-low-hiv-diagnosis-rates">Visualization 2: Radar Chart of Socioeconomic Variables and Comparison to High or Low HIV Diagnosis rates</h2>
+<section id="visualization-2-radar-chart-of-socioeconomic-variables-and-comparison-to-high-or-low-hiv-diagnosis-rates-california-2023" class="level2">
+<h2 class="anchored" data-anchor-id="visualization-2-radar-chart-of-socioeconomic-variables-and-comparison-to-high-or-low-hiv-diagnosis-rates-california-2023">Visualization 2: Radar Chart of Socioeconomic Variables and Comparison to High or Low HIV Diagnosis rates (California 2023)</h2>
 <p>This plot shows cards that show the average percents for each county for poverty, less than high school education, uninsured rate, and unemployment rate for 2023. Also, it shows a radar chart that normalized these soceocnomic factor from 0 to 1 across all counties. Specific California counties can compare how they do with other counties this way. The visualization also compares to a high and low HIV diagnosis group (seperated by median). There appears to be a relationship between having a less than High School education and higher HIV diagnosis rates for California counties. There appears to not be a strong relationship for poverty, unemployment, and uninsured rates for HIV diagnosis.</p>
 </section>
+<section id="visualization-2-geographic-variation-in-hiv-diagnosis-rates-and-prep-use-by-county-california-2023" class="level2">
+<h2 class="anchored" data-anchor-id="visualization-2-geographic-variation-in-hiv-diagnosis-rates-and-prep-use-by-county-california-2023">Visualization 2: [Geographic variation in HIV diagnosis rates and PrEP use by county (California 2023)</h2>
+<p>The interactive map examine geographic variation in new HIV diagnosis rates and PrEP use by county. We visualize HIV new diagnoses rate per 100,000 and represented county PrEP use rate per 100,000 with dots to show high or low PrEP use. Higher new hiv diagnoses rate are concentrated in larger counties in the south and middle of California. Counties with higher new hiv diagnoses rate have lower PrEP use rate compared to smaller counties with lower new hiv diagnosis rate. The interactive map shows that Kern county has highest new HIV diagnoses rate (29) compared to Imperial county with highest PrEp users rate and a lower new HIV diagnoses rate (18).</p>
+</section>
 <section id="visualization-3-new-hiv-diagnosis-average-rate-by-raceethnicity-california-2023" class="level2">
-<h2 class="anchored" data-anchor-id="visualization-3-new-hiv-diagnosis-average-rate-by-raceethnicity-california-2023">Visualization 3: [New HIV Diagnosis Average rate by race/ethnicity (California 2023)]</h2>
+<h2 class="anchored" data-anchor-id="visualization-3-new-hiv-diagnosis-average-rate-by-raceethnicity-california-2023">Visualization 3: [New HIV Diagnosis Average rate by race/ethnicity (California 2023)</h2>
 <p>This grouped bar chart shows the average of new HIV diagnosis rates per 100,000 among different racial groups in the State of California.The bar chart shows a higher average rate for black and Hispanic compared to white and other minorities.</p>
 <p>Counties bar chart also shows the different HIV diagnosis rates by race for each county. For most counties, Black groups experience much higher HIV diagnosis rates where it was about 3-4 times more than their White counterparts. Hispanic groups had twice as high diagnosis rates as their White Counterparts. For some counties, Multiple Races, and NH Pacific Islander also were at least twice as high as their White counterparts. Asian groups had less HIV diagnosis rates than their White counterparts.</p>
+<p>[Click the shiny dashboard to view counties specific average] (https://bao-duong17.shinyapps.io/shiny-app/)</p>
 <p>#Shiny app: [HIV Diagnosis Analysis Dashboard — California] Identifying California counties for targeted HIV prevention services: A County-level Analysis of HIV burden, PrEP Coverage, and socioeconomic vulnerability</p>
 <p><a href="https://bao-duong17.shinyapps.io/shiny-app//">Click here to open the interactive Shinyapp</a></p>
 </section>
 <section id="limitations" class="level2">
 <h2 class="anchored" data-anchor-id="limitations">Limitations</h2>
-<p>We had to use 2023 as that was the most recent year available for AIDSVu for their HIV diagnosis, PrEP, and socioeconomic factors. A good amount of the data was suppressed due to cases being too low to share in a dataset or the state department requested to not share to AIDSVu. The dataset also shared rates for HIV diagnosis and PrEP, but the rates had a related rate stability variable that directed us to view the rate with caution due to cases being too low (for example, American Indian for many counties) and so we mutated the dataset to remove those low confidence values from the visualizations. We also did not have PrEP rate by race and so we were unable to make a stronger analysis to consider potential interplay of race to PrEP to HIV diagonosis. Finally, our chloropleth map analyzed by counties, but perhaps there was a better way to analyze rates and relationships more meaningfully by population hubs in California.</p>
+<p>We had to use 2023 as that was the most recent year available for AIDSVu for their HIV diagnosis, PrEP, and socioeconomic factors. A good amount of the data was suppressed due to cases being too low to share in a dataset or the state department requested to not share to AIDSVu. The dataset also shared rates for HIV diagnosis and PrEP, but the rates had a related rate stability variable that directed us to view the rate with caution due to cases being too low (for example, American Indian for many counties) and so we mutated the dataset to remove those low confidence values from the visualizations. We also did not have PrEP rate by race and so we were unable to make a stronger analysis to consider potential interplay of race to PrEP to HIV diagnosis. Finally, our chloropleth map analyzed by counties, but perhaps there was a better way to analyze rates and relationships more meaningfully by population hubs in California.</p>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>

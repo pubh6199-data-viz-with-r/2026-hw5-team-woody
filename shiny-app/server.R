@@ -208,7 +208,7 @@ server <- function(input, output, session) {
       labs(
         title    = paste("HIV Diagnosis Rates by Race/Ethnicity —",
                          input$county_bar, "County"),
-        subtitle = "Diagnoses per 100,000 population (2023). Counties with suppressed racial groups are omitted.",
+        subtitle = "Diagnoses per 100,000 population (2023).",
         x        = NULL,
         y        = "Rate per 100,000"
       ) +

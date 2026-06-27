@@ -2,7 +2,7 @@
 ui <- page_navbar(
   title = "HIV Diagnosis Analysis Dashboard — California",
   theme = bs_theme(version = 5, bootswatch = "flatly"),
-  
+ 
   # ── Tab 1: Choropleth Map ─────────────────────────────────────────────────
   nav_panel(
     "Geographic Variation",
@@ -11,22 +11,21 @@ ui <- page_navbar(
       sidebar = sidebar(
         h5(
           "Identifying California counties for targeted HIV prevention services:
-          A County-level Analysis of HIV burden, PrEP Coverage, and
-          socioeconomic vulnerability"
+        A County-level Analysis of HIV burden, PrEP Coverage, and
+        socioeconomic vulnerability"
         ),
         
         p(
           "This map displays county-level HIV diagnosis rates and PrEP utilization
-          across California counties."
+        across California counties. Counties with suppressed or unreliable estimates are omitted from the map."
         ),
         
         hr(),
         
-        p(strong("Overall Dashboard Data Sources:")),
+        p(strong("Data Sources:")),
         
         tags$ul(
           tags$li("AIDSVu County New Diagnoses Dataset, 2023"),
-          tags$li("AIDSVu County SDOH Dataset, 2023"),
           tags$li("AIDSVu County PrEP Dataset, 2023"),
           tags$li("U.S. Census TIGER/Line county shapefiles")
         ),
@@ -42,8 +41,7 @@ ui <- page_navbar(
         leafletOutput("choropleth_map", height = "650px"),
         card_footer(
           style = "font-size:0.78rem; color:#888;",
-          "Both Diagnosis and PrEP Rates are reported per 100,000 population. Counties with suppressed
-          or unreliable estimates are omitted from the map."
+          "Rates are reported per 100,000 population."
         )
       )
     )
@@ -63,8 +61,8 @@ ui <- page_navbar(
         
         hr(),
         p("This radar chart compares normalized socioeconomic variables between
-             high and low HIV diagnosis rate groups for the selected county. A value of 0 = county with the lowest observed value in California
-  1 = county with the highest observed value in California.",
+           high and low HIV diagnosis rate groups for the selected county. A value of 0 = county with the lowest observed value in California
+1 = county with the highest observed value in California.",
           style = "font-size:0.82rem; color:#666;")
       ),
       
@@ -104,7 +102,7 @@ ui <- page_navbar(
         card_footer(
           style = "font-size:0.78rem; color:#888;",
           "Variables normalized 0–1 across all California counties.
-             Red = High HIV Rate group; Blue = Low HIV Rate group."
+           Red = High HIV Rate group; Blue = Low HIV Rate group.Source: AIDSVU 2023 New Diagnosis Dataset"
         )
       )
     )
@@ -123,7 +121,7 @@ ui <- page_navbar(
         ),
         hr(),
         p("This chart shows average HIV diagnosis rates (per 100,000) across
-             racial and ethnic groups for the selected county.",
+           racial and ethnic groups for the selected county. Counties with suppressed racial groups are omitted.",
           style = "font-size:0.82rem; color:#666;")
       ),
       
@@ -151,6 +149,3 @@ ui <- page_navbar(
     )
   )
 )
-
-
-  
